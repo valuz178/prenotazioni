@@ -8,6 +8,7 @@
   <meta name="apple-mobile-web-app-title" content="Prenotazioni" />
   <meta name="theme-color" content="#8B6F47" />
   <title>Corni di Fiasco</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet" />
   <style>
@@ -502,58 +503,144 @@ function renderSpese() {
 }
  
 // ── Riepilogo ─────────────────────────────────────────────────────────
+// chart instances registry
+const chartRegistry = {};
+function destroyChart(id) { if (chartRegistry[id]) { chartRegistry[id].destroy(); delete chartRegistry[id]; } }
+ 
 function renderRiepilogo() {
-  const el=document.getElementById("riepilogo-content");
-  if (!bookings.length){el.innerHTML=`<div class="empty">Nessun dato ancora.</div>`;return;}
-  const years=[...new Set(bookings.map(yearOf).filter(Boolean))].sort((a,b)=>b-a);
-  let html="";
-  years.forEach(y=>{
-    const yb=bookings.filter(b=>yearOf(b)===y);
-    const ys=spese.filter(sp=>sp.data&&sp.data.startsWith(y));
-    const totalLordo=yb.reduce((s,b)=>s+(parseFloat(b.prezzo)||0),0);
-    const totalNettoC=yb.reduce((s,b)=>s+calcNetti(b).nettoComm,0);
-    const totalNettoT=yb.reduce((s,b)=>s+calcNetti(b).nettoTasse,0);
-    const totalNotti=yb.reduce((s,b)=>s+(nights(b.check_in,b.check_out)||0),0);
-    const totComm=totalLordo-totalNettoC;
-    const totTasse=totalNettoC-totalNettoT;
-    const catMap={};
+  const el = document.getElementById("riepilogo-content");
+  if (!bookings.length) { el.innerHTML = `<div class="empty">Nessun dato ancora.</div>`; return; }
+ 
+  const years = [...new Set(bookings.map(yearOf).filter(Boolean))].sort((a,b) => b-a);
+ 
+  // ── Barchart multi-anno (se anni > 1, altrimenti solo annuale) ──
+  const allYearsData = years.map(y => {
+    const yb = bookings.filter(b => yearOf(b)===y);
+    const ys = spese.filter(sp => sp.data && sp.data.startsWith(y));
+    const lordo    = yb.reduce((s,b) => s+(parseFloat(b.prezzo)||0), 0);
+    const nettoC   = yb.reduce((s,b) => s+calcNetti(b).nettoComm, 0);
+    const nettoT   = yb.reduce((s,b) => s+calcNetti(b).nettoTasse, 0);
+    const comm     = lordo - nettoC;
+    const tasse    = nettoC - nettoT;
+    const speseTot = ys.reduce((s,sp) => s+(parseFloat(sp.importo)||0), 0);
+    const margine  = nettoT - speseTot;
+    return { y, lordo, comm, tasse, speseTot, margine, nettoT };
+  });
+ 
+  let html = "";
+ 
+  // Grafico a barre comparativo (solo se almeno 1 anno)
+  html += `<div style="background:var(--white);border:1px solid var(--border-light);border-radius:12px;padding:24px;margin-bottom:20px">
+    <div class="section-title" style="margin-bottom:16px">Confronto annuale</div>
+    <canvas id="chart-bar" style="max-height:320px"></canvas>
+  </div>`;
+ 
+  // Per ogni anno: stats + torta + tabelle
+  years.forEach(y => {
+    const yb = bookings.filter(b => yearOf(b)===y);
+    const ys = spese.filter(sp => sp.data && sp.data.startsWith(y));
+    const totalLordo  = yb.reduce((s,b)=>s+(parseFloat(b.prezzo)||0),0);
+    const totalNettoC = yb.reduce((s,b)=>s+calcNetti(b).nettoComm,0);
+    const totalNettoT = yb.reduce((s,b)=>s+calcNetti(b).nettoTasse,0);
+    const totalNotti  = yb.reduce((s,b)=>s+(nights(b.check_in,b.check_out)||0),0);
+    const totComm     = totalLordo-totalNettoC;
+    const totTasse    = totalNettoC-totalNettoT;
+    const catMap = {};
     ys.forEach(sp=>{const cat=sp.categoria||"Altro";catMap[cat]=(catMap[cat]||0)+(parseFloat(sp.importo)||0);});
-    const totalSpese=Object.values(catMap).reduce((s,v)=>s+v,0);
-    const margine=totalNettoT-totalSpese;
-    const platMap={};
+    const totalSpese = Object.values(catMap).reduce((s,v)=>s+v,0);
+    const margine    = totalNettoT-totalSpese;
+    const platMap = {};
     yb.forEach(b=>{const p=b.piattaforma||"N/D";if(!platMap[p])platMap[p]={count:0,lordo:0};platMap[p].count++;platMap[p].lordo+=parseFloat(b.prezzo)||0;});
-    html+=`<div style="background:var(--white);border:1px solid var(--border-light);border-radius:12px;padding:24px;margin-bottom:20px">
+ 
+    html += `<div style="background:var(--white);border:1px solid var(--border-light);border-radius:12px;padding:24px;margin-bottom:20px">
       <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:18px;color:var(--brown)">${y}</h2>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px">
         <div class="stat-card"><div class="stat-label">Lordo</div><div class="stat-value green">${fmtEur(totalLordo)}</div></div>
-        <div class="stat-card"><div class="stat-label">Commissioni pagate</div><div class="stat-value red">${fmtEur(totComm)}</div></div>
-        <div class="stat-card"><div class="stat-label">Netto commissioni</div><div class="stat-value orange">${fmtEur(totalNettoC)}</div></div>
-        <div class="stat-card"><div class="stat-label">Tasse (cedolare)</div><div class="stat-value red">${fmtEur(totTasse)}</div></div>
+        <div class="stat-card"><div class="stat-label">Commissioni</div><div class="stat-value red">${fmtEur(totComm)}</div></div>
+        <div class="stat-card"><div class="stat-label">Netto comm.</div><div class="stat-value orange">${fmtEur(totalNettoC)}</div></div>
+        <div class="stat-card"><div class="stat-label">Tasse</div><div class="stat-value red">${fmtEur(totTasse)}</div></div>
         <div class="stat-card"><div class="stat-label">Netto tasse</div><div class="stat-value orange">${fmtEur(totalNettoT)}</div></div>
-        <div class="stat-card"><div class="stat-label">Spese operative</div><div class="stat-value red">${fmtEur(totalSpese)}</div></div>
-        <div class="stat-card"><div class="stat-label">Margine finale</div><div class="stat-value ${margine>=0?"green":"red"}">${fmtEur(margine)}</div></div>
+        <div class="stat-card"><div class="stat-label">Spese</div><div class="stat-value red">${fmtEur(totalSpese)}</div></div>
+        <div class="stat-card"><div class="stat-label">Margine</div><div class="stat-value ${margine>=0?"green":"red"}">${fmtEur(margine)}</div></div>
         <div class="stat-card"><div class="stat-label">Notti</div><div class="stat-value">${totalNotti}</div></div>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-        <div>
-          <div class="section-title" style="margin-bottom:8px">Per piattaforma</div>
-          <table style="width:100%;border-collapse:collapse;font-size:13px">
-            <thead><tr style="background:var(--brown-pale)">
-              <th style="padding:7px 10px;text-align:left;font-size:10px;letter-spacing:.6px;text-transform:uppercase;font-weight:600;color:#666">Piattaforma</th>
-              <th style="padding:7px 10px;text-align:right;font-size:10px;letter-spacing:.6px;text-transform:uppercase;font-weight:600;color:#666">Pren.</th>
-              <th style="padding:7px 10px;text-align:right;font-size:10px;letter-spacing:.6px;text-transform:uppercase;font-weight:600;color:#666">Lordo</th>
-            </tr></thead>
-            <tbody>${Object.entries(platMap).sort((a,b)=>b[1].lordo-a[1].lordo).map(([p,d])=>`<tr style="border-top:1px solid var(--border-light)"><td style="padding:7px 10px"><span class="pill" style="background:${PLATFORM_COLORS[p]||"#78909C"}">${p}</span></td><td style="padding:7px 10px;text-align:right;color:var(--muted)">${d.count}</td><td style="padding:7px 10px;text-align:right;font-weight:600;color:var(--green)">${fmtEur(d.lordo)}</td></tr>`).join("")}</tbody>
-          </table>
+ 
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start">
+ 
+        <div style="display:flex;flex-direction:column;gap:20px">
+          <div>
+            <div class="section-title" style="margin-bottom:8px">Per piattaforma</div>
+            <table style="width:100%;border-collapse:collapse;font-size:13px">
+              <thead><tr style="background:var(--brown-pale)">
+                <th style="padding:7px 10px;text-align:left;font-size:10px;letter-spacing:.6px;text-transform:uppercase;font-weight:600;color:#666;white-space:nowrap">Piattaforma</th>
+                <th style="padding:7px 10px;text-align:right;font-size:10px;letter-spacing:.6px;text-transform:uppercase;font-weight:600;color:#666">Pren.</th>
+                <th style="padding:7px 10px;text-align:right;font-size:10px;letter-spacing:.6px;text-transform:uppercase;font-weight:600;color:#666">Lordo</th>
+              </tr></thead>
+              <tbody>${Object.entries(platMap).sort((a,b)=>b[1].lordo-a[1].lordo).map(([p,d])=>`<tr style="border-top:1px solid var(--border-light)"><td style="padding:7px 10px"><span class="pill" style="background:${PLATFORM_COLORS[p]||"#78909C"}">${p}</span></td><td style="padding:7px 10px;text-align:right;color:var(--muted)">${d.count}</td><td style="padding:7px 10px;text-align:right;font-weight:600;color:var(--green)">${fmtEur(d.lordo)}</td></tr>`).join("")}</tbody>
+            </table>
+          </div>
+          <div>
+            <div class="section-title" style="margin-bottom:8px">Spese per categoria</div>
+            ${Object.keys(catMap).length===0
+              ? `<div style="color:var(--muted);font-style:italic;font-size:13px">Nessuna spesa per ${y}</div>`
+              : `<table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr style="background:var(--brown-pale)"><th style="padding:7px 10px;text-align:left;font-size:10px;letter-spacing:.6px;text-transform:uppercase;font-weight:600;color:#666">Categoria</th><th style="padding:7px 10px;text-align:right;font-size:10px;letter-spacing:.6px;text-transform:uppercase;font-weight:600;color:#666">Totale</th></tr></thead><tbody>${Object.entries(catMap).sort((a,b)=>b[1]-a[1]).map(([cat,tot])=>`<tr style="border-top:1px solid var(--border-light)"><td style="padding:7px 10px"><span class="pill" style="background:var(--brown)">${cat}</span></td><td style="padding:7px 10px;text-align:right;font-weight:600;color:#c62828">${fmtEur(tot)}</td></tr>`).join("")}</tbody></table>`}
+          </div>
         </div>
-        <div>
-          <div class="section-title" style="margin-bottom:8px">Spese per categoria</div>
-          ${Object.keys(catMap).length===0?`<div style="color:var(--muted);font-style:italic;font-size:13px">Nessuna spesa per ${y}</div>`:`<table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr style="background:var(--brown-pale)"><th style="padding:7px 10px;text-align:left;font-size:10px;letter-spacing:.6px;text-transform:uppercase;font-weight:600;color:#666">Categoria</th><th style="padding:7px 10px;text-align:right;font-size:10px;letter-spacing:.6px;text-transform:uppercase;font-weight:600;color:#666">Totale</th></tr></thead><tbody>${Object.entries(catMap).sort((a,b)=>b[1]-a[1]).map(([cat,tot])=>`<tr style="border-top:1px solid var(--border-light)"><td style="padding:7px 10px"><span class="pill" style="background:var(--brown)">${cat}</span></td><td style="padding:7px 10px;text-align:right;font-weight:600;color:#c62828">${fmtEur(tot)}</td></tr>`).join("")}</tbody></table>`}
+ 
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+          <div class="section-title">Ripartizione del lordo</div>
+          <canvas id="chart-pie-${y}" style="max-width:280px;max-height:280px"></canvas>
         </div>
+ 
       </div>
     </div>`;
   });
-  el.innerHTML=html;
+ 
+  el.innerHTML = html;
+ 
+  // ── Draw bar chart ──────────────────────────────────────────────────
+  destroyChart("bar");
+  const barCtx = document.getElementById("chart-bar").getContext("2d");
+  chartRegistry["bar"] = new Chart(barCtx, {
+    type: "bar",
+    data: {
+      labels: allYearsData.map(d=>d.y),
+      datasets: [
+        { label:"Margine netto",   data: allYearsData.map(d=>Math.round(d.margine)),  backgroundColor:"#2E7D32" },
+        { label:"Spese operative", data: allYearsData.map(d=>Math.round(d.speseTot)), backgroundColor:"#c62828" },
+        { label:"Tasse",           data: allYearsData.map(d=>Math.round(d.tasse)),    backgroundColor:"#EF9A9A" },
+        { label:"Commissioni",     data: allYearsData.map(d=>Math.round(d.comm)),     backgroundColor:"#FFCC80" },
+      ]
+    },
+    options: {
+      responsive:true, plugins:{ legend:{ position:"bottom" },
+        tooltip:{ callbacks:{ label: ctx => " €"+ctx.parsed.y.toLocaleString("it-IT") }}},
+      scales:{ x:{ stacked:true }, y:{ stacked:true, ticks:{ callback: v=>"€"+v.toLocaleString("it-IT") }}}
+    }
+  });
+ 
+  // ── Draw pie charts ─────────────────────────────────────────────────
+  allYearsData.forEach(d => {
+    destroyChart("pie-"+d.y);
+    const ctx = document.getElementById("chart-pie-"+d.y);
+    if (!ctx) return;
+    chartRegistry["pie-"+d.y] = new Chart(ctx.getContext("2d"), {
+      type:"doughnut",
+      data:{
+        labels:["Margine netto","Spese operative","Tasse","Commissioni"],
+        datasets:[{
+          data:[Math.round(d.margine),Math.round(d.speseTot),Math.round(d.tasse),Math.round(d.comm)],
+          backgroundColor:["#2E7D32","#c62828","#EF9A9A","#FFCC80"],
+          borderWidth:2, borderColor:"#FDFAF5"
+        }]
+      },
+      options:{
+        responsive:true, cutout:"60%",
+        plugins:{ legend:{ position:"bottom", labels:{ font:{ size:12 }}},
+          tooltip:{ callbacks:{ label: ctx => " €"+ctx.parsed.toLocaleString("it-IT") }}}
+      }
+    });
+  });
 }
  
 // ── Form prenotazione ─────────────────────────────────────────────────
@@ -766,25 +853,40 @@ function download(csv, filename) {
 function exportCSV(type) {
   document.getElementById("export-menu").style.display = "none";
  
-  if (type === "bookings" || type === "all") {
-    if (!bookings.length) { alert("Nessuna prenotazione da esportare."); }
-    else {
+  if (type === "bookings") {
+    if (!bookings.length) { alert("Nessuna prenotazione da esportare."); return; }
+    const header = ["Check-in","Check-out","Notti","Lordo (EUR)","Piattaforma","Commissione %","Netto comm.","Netto tasse","Ospiti","Paese","Note"];
+    const rows = bookings.map(b => {
+      const n=nights(b.check_in,b.check_out), nc=calcNetti(b);
+      return [b.check_in,b.check_out,n??'',b.prezzo||'',b.piattaforma||'',nc.commPct||0,Math.round(nc.nettoComm),Math.round(nc.nettoTasse),b.ospiti||'',b.paese||'',b.note||''];
+    });
+    download(toCSV([header,...rows]), "prenotazioni_cdf.csv");
+  }
+ 
+  if (type === "spese") {
+    if (!spese.length) { alert("Nessuna spesa da esportare."); return; }
+    const header = ["Data","Categoria","Descrizione","Importo (EUR)"];
+    const rows = spese.map(s => [s.data||'', s.categoria||'', s.descrizione||'', s.importo||'']);
+    download(toCSV([header,...rows]), "spese_cdf.csv");
+  }
+ 
+  if (type === "all") {
+    if (!bookings.length && !spese.length) { alert("Nessun dato da esportare."); return; }
+    let csv = "";
+    if (bookings.length) {
       const header = ["Check-in","Check-out","Notti","Lordo (EUR)","Piattaforma","Commissione %","Netto comm.","Netto tasse","Ospiti","Paese","Note"];
       const rows = bookings.map(b => {
         const n=nights(b.check_in,b.check_out), nc=calcNetti(b);
         return [b.check_in,b.check_out,n??'',b.prezzo||'',b.piattaforma||'',nc.commPct||0,Math.round(nc.nettoComm),Math.round(nc.nettoTasse),b.ospiti||'',b.paese||'',b.note||''];
       });
-      download(toCSV([header,...rows]), "prenotazioni_cdf.csv");
+      csv += "--- PRENOTAZIONI ---\n" + toCSV([header,...rows]);
     }
-  }
- 
-  if (type === "spese" || type === "all") {
-    if (!spese.length) { alert("Nessuna spesa da esportare."); }
-    else {
+    if (spese.length) {
       const header = ["Data","Categoria","Descrizione","Importo (EUR)"];
       const rows = spese.map(s => [s.data||'', s.categoria||'', s.descrizione||'', s.importo||'']);
-      download(toCSV([header,...rows]), "spese_cdf.csv");
+      csv += "\n\n--- SPESE ---\n" + toCSV([header,...rows]);
     }
+    download(csv, "cdf_completo.csv");
   }
 }
  
