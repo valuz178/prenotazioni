@@ -121,6 +121,7 @@
   </div>
   <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
     <button class="btn-ghost" onclick="exportCSV()">⬇ Esporta CSV</button>
+    <label class="btn-ghost" style="cursor:pointer">⬆ Importa CSV<input type="file" accept=".csv" style="display:none" onchange="importCSV(this)"></label>
     <button class="btn-primary" id="btn-nuova" onclick="openForm()">+ Nuova prenotazione</button>
   </div>
 </div>
@@ -682,6 +683,57 @@ async function confirmDelete(){
     setSyncStatus("ok","✓ eliminato");
     closeConfirm(); render();
   } catch(e){setSyncStatus("error","✗ errore");alert("Errore: "+e.message);}
+}
+ 
+ 
+// ── Import CSV ────────────────────────────────────────────────────────
+async function importCSV(input) {
+  const file = input.files[0]; if (!file) return;
+  const text = await file.text();
+  const lines = text.trim().split("\n").slice(1); // skip header
+  if (!lines.length) { alert("File vuoto."); return; }
+ 
+  const rows = lines.map(line => {
+    const cols = [];
+    let cur = "", inQ = false;
+    for (const ch of line) {
+      if (ch === '"') { inQ = !inQ; }
+      else if (ch === ',' && !inQ) { cols.push(cur); cur = ""; }
+      else { cur += ch; }
+    }
+    cols.push(cur);
+    return cols.map(c => c.replace(/^"|"$/g,'').replace(/""/g,'"').trim());
+  });
+ 
+  // CSV columns: Check-in, Check-out, Notti, Lordo(EUR), Piattaforma, Comm%, Netto comm, Netto tasse, Ospiti, Paese, Note
+  const toInsert = rows.map(c => ({
+    id: Date.now().toString() + Math.random().toString(36).slice(2,6),
+    check_in:     c[0] || null,
+    check_out:    c[1] || null,
+    prezzo:       parseFloat(c[3]) || null,
+    piattaforma:  c[4] || null,
+    commissione:  parseFloat(c[5]) || 0,
+    tasse:        21,
+    ospiti:       parseInt(c[8]) || null,
+    paese:        c[9] || null,
+    note:         c[10] || null
+  }));
+ 
+  if (!confirm(`Importare ${toInsert.length} prenotazioni?`)) { input.value=""; return; }
+ 
+  setSyncStatus("loading", "⟳ importazione…");
+  try {
+    for (const row of toInsert) {
+      await dbInsert("prenotazioni", row);
+      bookings.push(row);
+    }
+    setSyncStatus("ok", "✓ " + toInsert.length + " importate");
+    input.value = "";
+    render();
+  } catch(e) {
+    setSyncStatus("error", "✗ errore importazione");
+    alert("Errore durante l'importazione: " + e.message);
+  }
 }
  
 // ── Export ────────────────────────────────────────────────────────────
