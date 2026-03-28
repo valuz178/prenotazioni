@@ -149,6 +149,17 @@
       <div class="yearly-grid" id="yearly-grid"></div>
     </div>
   </div>
+  <div id="mini-pie-wrap" style="display:none;max-width:1200px;margin-inline:auto;margin-bottom:20px">
+    <div style="background:var(--white);border:1px solid var(--border-light);border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+      <div style="flex:1;min-width:200px">
+        <div class="section-title" style="margin-bottom:6px" id="mini-pie-title">Anno in corso</div>
+        <div id="mini-pie-legend" style="font-size:12px;color:var(--muted);line-height:1.9"></div>
+      </div>
+      <div style="width:130px;height:130px;flex-shrink:0">
+        <canvas id="mini-pie-canvas"></canvas>
+      </div>
+    </div>
+  </div>
   <div id="empty-state" class="empty">Nessuna prenotazione ancora.<span>Tocca "+ Nuova prenotazione" per iniziare.</span></div>
   <div class="table-wrap" id="table-wrap" style="display:none">
     <table>
@@ -488,6 +499,7 @@ function render() {
   });
  
   renderSpese();
+  renderMiniPie();
 }
  
 function renderSpese() {
@@ -513,133 +525,160 @@ function renderRiepilogo() {
  
   const years = [...new Set(bookings.map(yearOf).filter(Boolean))].sort((a,b) => b-a);
  
-  // ── Barchart multi-anno (se anni > 1, altrimenti solo annuale) ──
   const allYearsData = years.map(y => {
     const yb = bookings.filter(b => yearOf(b)===y);
     const ys = spese.filter(sp => sp.data && sp.data.startsWith(y));
-    const lordo    = yb.reduce((s,b) => s+(parseFloat(b.prezzo)||0), 0);
-    const nettoC   = yb.reduce((s,b) => s+calcNetti(b).nettoComm, 0);
-    const nettoT   = yb.reduce((s,b) => s+calcNetti(b).nettoTasse, 0);
-    const comm     = lordo - nettoC;
-    const tasse    = nettoC - nettoT;
-    const speseTot = ys.reduce((s,sp) => s+(parseFloat(sp.importo)||0), 0);
-    const margine  = nettoT - speseTot;
-    return { y, lordo, comm, tasse, speseTot, margine, nettoT };
+    const lordo    = yb.reduce((s,b)=>s+(parseFloat(b.prezzo)||0),0);
+    const nettoC   = yb.reduce((s,b)=>s+calcNetti(b).nettoComm,0);
+    const nettoT   = yb.reduce((s,b)=>s+calcNetti(b).nettoTasse,0);
+    const comm     = lordo-nettoC;
+    const tasse    = nettoC-nettoT;
+    const speseTot = ys.reduce((s,sp)=>s+(parseFloat(sp.importo)||0),0);
+    const margine  = nettoT-speseTot;
+    const notti    = yb.reduce((s,b)=>s+(nights(b.check_in,b.check_out)||0),0);
+    const catMap   = {};
+    ys.forEach(sp=>{const cat=sp.categoria||"Altro";catMap[cat]=(catMap[cat]||0)+(parseFloat(sp.importo)||0);});
+    const platMap  = {};
+    yb.forEach(b=>{const p=b.piattaforma||"N/D";if(!platMap[p])platMap[p]={count:0,lordo:0};platMap[p].count++;platMap[p].lordo+=parseFloat(b.prezzo)||0;});
+    return {y,lordo,nettoC,nettoT,comm,tasse,speseTot,margine,notti,catMap,platMap};
   });
  
-  let html = "";
- 
-  // Grafico a barre comparativo (solo se almeno 1 anno)
-  html += `<div style="background:var(--white);border:1px solid var(--border-light);border-radius:12px;padding:24px;margin-bottom:20px">
-    <div class="section-title" style="margin-bottom:16px">Confronto annuale</div>
-    <canvas id="chart-bar" style="max-height:320px"></canvas>
-  </div>`;
- 
-  // Per ogni anno: stats + torta + tabelle
-  years.forEach(y => {
-    const yb = bookings.filter(b => yearOf(b)===y);
-    const ys = spese.filter(sp => sp.data && sp.data.startsWith(y));
-    const totalLordo  = yb.reduce((s,b)=>s+(parseFloat(b.prezzo)||0),0);
-    const totalNettoC = yb.reduce((s,b)=>s+calcNetti(b).nettoComm,0);
-    const totalNettoT = yb.reduce((s,b)=>s+calcNetti(b).nettoTasse,0);
-    const totalNotti  = yb.reduce((s,b)=>s+(nights(b.check_in,b.check_out)||0),0);
-    const totComm     = totalLordo-totalNettoC;
-    const totTasse    = totalNettoC-totalNettoT;
-    const catMap = {};
-    ys.forEach(sp=>{const cat=sp.categoria||"Altro";catMap[cat]=(catMap[cat]||0)+(parseFloat(sp.importo)||0);});
-    const totalSpese = Object.values(catMap).reduce((s,v)=>s+v,0);
-    const margine    = totalNettoT-totalSpese;
-    const platMap = {};
-    yb.forEach(b=>{const p=b.piattaforma||"N/D";if(!platMap[p])platMap[p]={count:0,lordo:0};platMap[p].count++;platMap[p].lordo+=parseFloat(b.prezzo)||0;});
- 
-    html += `<div style="background:var(--white);border:1px solid var(--border-light);border-radius:12px;padding:24px;margin-bottom:20px">
-      <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:18px;color:var(--brown)">${y}</h2>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px">
-        <div class="stat-card"><div class="stat-label">Lordo</div><div class="stat-value green">${fmtEur(totalLordo)}</div></div>
-        <div class="stat-card"><div class="stat-label">Commissioni</div><div class="stat-value red">${fmtEur(totComm)}</div></div>
-        <div class="stat-card"><div class="stat-label">Netto comm.</div><div class="stat-value orange">${fmtEur(totalNettoC)}</div></div>
-        <div class="stat-card"><div class="stat-label">Tasse</div><div class="stat-value red">${fmtEur(totTasse)}</div></div>
-        <div class="stat-card"><div class="stat-label">Netto tasse</div><div class="stat-value orange">${fmtEur(totalNettoT)}</div></div>
-        <div class="stat-card"><div class="stat-label">Spese</div><div class="stat-value red">${fmtEur(totalSpese)}</div></div>
-        <div class="stat-card"><div class="stat-label">Margine</div><div class="stat-value ${margine>=0?"green":"red"}">${fmtEur(margine)}</div></div>
-        <div class="stat-card"><div class="stat-label">Notti</div><div class="stat-value">${totalNotti}</div></div>
+  let html = `
+    <div style="background:var(--white);border:1px solid var(--border-light);border-radius:12px;padding:20px;margin-bottom:20px">
+      <div class="section-title" style="margin-bottom:14px">Panoramica</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:center">
+        <div><canvas id="chart-bar" style="max-height:220px"></canvas></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+          <canvas id="chart-pie-all" style="max-height:220px;max-width:220px"></canvas>
+        </div>
       </div>
+    </div>`;
  
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start">
- 
-        <div style="display:flex;flex-direction:column;gap:20px">
-          <div>
-            <div class="section-title" style="margin-bottom:8px">Per piattaforma</div>
-            <table style="width:100%;border-collapse:collapse;font-size:13px">
-              <thead><tr style="background:var(--brown-pale)">
-                <th style="padding:7px 10px;text-align:left;font-size:10px;letter-spacing:.6px;text-transform:uppercase;font-weight:600;color:#666;white-space:nowrap">Piattaforma</th>
-                <th style="padding:7px 10px;text-align:right;font-size:10px;letter-spacing:.6px;text-transform:uppercase;font-weight:600;color:#666">Pren.</th>
-                <th style="padding:7px 10px;text-align:right;font-size:10px;letter-spacing:.6px;text-transform:uppercase;font-weight:600;color:#666">Lordo</th>
-              </tr></thead>
-              <tbody>${Object.entries(platMap).sort((a,b)=>b[1].lordo-a[1].lordo).map(([p,d])=>`<tr style="border-top:1px solid var(--border-light)"><td style="padding:7px 10px"><span class="pill" style="background:${PLATFORM_COLORS[p]||"#78909C"}">${p}</span></td><td style="padding:7px 10px;text-align:right;color:var(--muted)">${d.count}</td><td style="padding:7px 10px;text-align:right;font-weight:600;color:var(--green)">${fmtEur(d.lordo)}</td></tr>`).join("")}</tbody>
-            </table>
-          </div>
-          <div>
-            <div class="section-title" style="margin-bottom:8px">Spese per categoria</div>
-            ${Object.keys(catMap).length===0
-              ? `<div style="color:var(--muted);font-style:italic;font-size:13px">Nessuna spesa per ${y}</div>`
-              : `<table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr style="background:var(--brown-pale)"><th style="padding:7px 10px;text-align:left;font-size:10px;letter-spacing:.6px;text-transform:uppercase;font-weight:600;color:#666">Categoria</th><th style="padding:7px 10px;text-align:right;font-size:10px;letter-spacing:.6px;text-transform:uppercase;font-weight:600;color:#666">Totale</th></tr></thead><tbody>${Object.entries(catMap).sort((a,b)=>b[1]-a[1]).map(([cat,tot])=>`<tr style="border-top:1px solid var(--border-light)"><td style="padding:7px 10px"><span class="pill" style="background:var(--brown)">${cat}</span></td><td style="padding:7px 10px;text-align:right;font-weight:600;color:#c62828">${fmtEur(tot)}</td></tr>`).join("")}</tbody></table>`}
-          </div>
+  allYearsData.forEach(d => {
+    const {y,lordo,nettoC,nettoT,comm,tasse,speseTot,margine,notti,catMap,platMap} = d;
+    html += `<div style="background:var(--white);border:1px solid var(--border-light);border-radius:12px;padding:20px;margin-bottom:20px">
+      <h2 style="font-family:'Playfair Display',serif;font-size:20px;margin-bottom:16px;color:var(--brown)">${y}</h2>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px">
+        <div class="stat-card"><div class="stat-label">Lordo</div><div class="stat-value green">${fmtEur(lordo)}</div></div>
+        <div class="stat-card"><div class="stat-label">Commissioni</div><div class="stat-value red">${fmtEur(comm)}</div></div>
+        <div class="stat-card"><div class="stat-label">Netto comm.</div><div class="stat-value orange">${fmtEur(nettoC)}</div></div>
+        <div class="stat-card"><div class="stat-label">Tasse</div><div class="stat-value red">${fmtEur(tasse)}</div></div>
+        <div class="stat-card"><div class="stat-label">Netto tasse</div><div class="stat-value orange">${fmtEur(nettoT)}</div></div>
+        <div class="stat-card"><div class="stat-label">Spese</div><div class="stat-value red">${fmtEur(speseTot)}</div></div>
+        <div class="stat-card"><div class="stat-label">Margine</div><div class="stat-value ${margine>=0?"green":"red"}">${fmtEur(margine)}</div></div>
+        <div class="stat-card"><div class="stat-label">Notti</div><div class="stat-value">${notti}</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div>
+          <div class="section-title" style="margin-bottom:8px">Per piattaforma</div>
+          <table style="width:100%;border-collapse:collapse;font-size:13px">
+            <thead><tr style="background:var(--brown-pale)">
+              <th style="padding:6px 10px;text-align:left;font-size:10px;letter-spacing:.6px;text-transform:uppercase;font-weight:600;color:#666">Piattaforma</th>
+              <th style="padding:6px 10px;text-align:right;font-size:10px;letter-spacing:.6px;text-transform:uppercase;font-weight:600;color:#666">N.</th>
+              <th style="padding:6px 10px;text-align:right;font-size:10px;letter-spacing:.6px;text-transform:uppercase;font-weight:600;color:#666">Lordo</th>
+            </tr></thead>
+            <tbody>${Object.entries(platMap).sort((a,b)=>b[1].lordo-a[1].lordo).map(([p,d])=>`<tr style="border-top:1px solid var(--border-light)"><td style="padding:6px 10px"><span class="pill" style="background:${PLATFORM_COLORS[p]||"#78909C"}">${p}</span></td><td style="padding:6px 10px;text-align:right;color:var(--muted)">${d.count}</td><td style="padding:6px 10px;text-align:right;font-weight:600;color:var(--green)">${fmtEur(d.lordo)}</td></tr>`).join("")}</tbody>
+          </table>
         </div>
- 
-        <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
-          <div class="section-title">Ripartizione del lordo</div>
-          <canvas id="chart-pie-${y}" style="max-width:280px;max-height:280px"></canvas>
+        <div>
+          <div class="section-title" style="margin-bottom:8px">Spese per categoria</div>
+          ${Object.keys(catMap).length===0
+            ? `<div style="color:var(--muted);font-style:italic;font-size:13px">Nessuna spesa per ${y}</div>`
+            : `<table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr style="background:var(--brown-pale)"><th style="padding:6px 10px;text-align:left;font-size:10px;letter-spacing:.6px;text-transform:uppercase;font-weight:600;color:#666">Categoria</th><th style="padding:6px 10px;text-align:right;font-size:10px;letter-spacing:.6px;text-transform:uppercase;font-weight:600;color:#666">Totale</th></tr></thead><tbody>${Object.entries(catMap).sort((a,b)=>b[1]-a[1]).map(([cat,tot])=>`<tr style="border-top:1px solid var(--border-light)"><td style="padding:6px 10px"><span class="pill" style="background:var(--brown)">${cat}</span></td><td style="padding:6px 10px;text-align:right;font-weight:600;color:#c62828">${fmtEur(tot)}</td></tr>`).join("")}</tbody></table>`}
         </div>
- 
       </div>
     </div>`;
   });
  
   el.innerHTML = html;
  
-  // ── Draw bar chart ──────────────────────────────────────────────────
+  // ── Bar chart ──────────────────────────────────────────────────────
   destroyChart("bar");
-  const barCtx = document.getElementById("chart-bar").getContext("2d");
-  chartRegistry["bar"] = new Chart(barCtx, {
-    type: "bar",
-    data: {
+  chartRegistry["bar"] = new Chart(document.getElementById("chart-bar").getContext("2d"), {
+    type:"bar",
+    data:{
       labels: allYearsData.map(d=>d.y),
-      datasets: [
-        { label:"Margine netto",   data: allYearsData.map(d=>Math.round(d.margine)),  backgroundColor:"#2E7D32" },
-        { label:"Spese operative", data: allYearsData.map(d=>Math.round(d.speseTot)), backgroundColor:"#c62828" },
-        { label:"Tasse",           data: allYearsData.map(d=>Math.round(d.tasse)),    backgroundColor:"#EF9A9A" },
-        { label:"Commissioni",     data: allYearsData.map(d=>Math.round(d.comm)),     backgroundColor:"#FFCC80" },
+      datasets:[
+        {label:"Margine",     data:allYearsData.map(d=>Math.round(d.margine)),  backgroundColor:"#2E7D32"},
+        {label:"Spese",       data:allYearsData.map(d=>Math.round(d.speseTot)), backgroundColor:"#c62828"},
+        {label:"Tasse",       data:allYearsData.map(d=>Math.round(d.tasse)),    backgroundColor:"#EF9A9A"},
+        {label:"Commissioni", data:allYearsData.map(d=>Math.round(d.comm)),     backgroundColor:"#FFCC80"},
       ]
     },
-    options: {
-      responsive:true, plugins:{ legend:{ position:"bottom" },
-        tooltip:{ callbacks:{ label: ctx => " €"+ctx.parsed.y.toLocaleString("it-IT") }}},
-      scales:{ x:{ stacked:true }, y:{ stacked:true, ticks:{ callback: v=>"€"+v.toLocaleString("it-IT") }}}
+    options:{
+      responsive:true,
+      plugins:{legend:{position:"bottom",labels:{boxWidth:12,font:{size:11}}},
+        tooltip:{callbacks:{label:ctx=>" €"+ctx.parsed.y.toLocaleString("it-IT")}}},
+      scales:{x:{stacked:true},y:{stacked:true,ticks:{callback:v=>"€"+Math.round(v/1000)+"k"}}}
     }
   });
  
-  // ── Draw pie charts ─────────────────────────────────────────────────
-  allYearsData.forEach(d => {
-    destroyChart("pie-"+d.y);
-    const ctx = document.getElementById("chart-pie-"+d.y);
-    if (!ctx) return;
-    chartRegistry["pie-"+d.y] = new Chart(ctx.getContext("2d"), {
-      type:"doughnut",
-      data:{
-        labels:["Margine netto","Spese operative","Tasse","Commissioni"],
-        datasets:[{
-          data:[Math.round(d.margine),Math.round(d.speseTot),Math.round(d.tasse),Math.round(d.comm)],
-          backgroundColor:["#2E7D32","#c62828","#EF9A9A","#FFCC80"],
-          borderWidth:2, borderColor:"#FDFAF5"
-        }]
-      },
-      options:{
-        responsive:true, cutout:"60%",
-        plugins:{ legend:{ position:"bottom", labels:{ font:{ size:12 }}},
-          tooltip:{ callbacks:{ label: ctx => " €"+ctx.parsed.toLocaleString("it-IT") }}}
+  // ── Pie chart (anno più recente) ───────────────────────────────────
+  destroyChart("pie-all");
+  const d0 = allYearsData[0];
+  chartRegistry["pie-all"] = new Chart(document.getElementById("chart-pie-all").getContext("2d"), {
+    type:"doughnut",
+    data:{
+      labels:["Margine","Spese","Tasse","Commissioni"],
+      datasets:[{
+        data:[Math.round(d0.margine),Math.round(d0.speseTot),Math.round(d0.tasse),Math.round(d0.comm)],
+        backgroundColor:["#2E7D32","#c62828","#EF9A9A","#FFCC80"],
+        borderWidth:2,borderColor:"#FDFAF5"
+      }]
+    },
+    options:{
+      responsive:true,cutout:"55%",
+      plugins:{
+        legend:{position:"bottom",labels:{boxWidth:12,font:{size:11}}},
+        tooltip:{callbacks:{label:ctx=>" €"+ctx.parsed.toLocaleString("it-IT")}},
+        title:{display:true,text:d0.y+" — ripartizione lordo",font:{size:12},color:"#8B6F47"}
       }
-    });
+    }
+  });
+}
+ 
+// ── Mini pie for current year on prenotazioni tab ──────────────────────
+function renderMiniPie() {
+  const currentYear = new Date().getFullYear().toString();
+  const yb = bookings.filter(b => yearOf(b)===currentYear);
+  const ys = spese.filter(sp => sp.data && sp.data.startsWith(currentYear));
+  if (!yb.length) { const c=document.getElementById("mini-pie-wrap"); if(c) c.style.display="none"; return; }
+ 
+  const lordo    = yb.reduce((s,b)=>s+(parseFloat(b.prezzo)||0),0);
+  const nettoC   = yb.reduce((s,b)=>s+calcNetti(b).nettoComm,0);
+  const nettoT   = yb.reduce((s,b)=>s+calcNetti(b).nettoTasse,0);
+  const comm     = lordo-nettoC;
+  const tasse    = nettoC-nettoT;
+  const speseTot = ys.reduce((s,sp)=>s+(parseFloat(sp.importo)||0),0);
+  const margine  = nettoT-speseTot;
+ 
+  const wrap = document.getElementById("mini-pie-wrap");
+  if (!wrap) return;
+  wrap.style.display = "block";
+ 
+  document.getElementById("mini-pie-title").textContent = currentYear + " — ripartizione";
+  document.getElementById("mini-pie-legend").innerHTML = [
+    ["🟢","Margine",margine],["🔴","Spese",speseTot],["🩷","Tasse",tasse],["🟡","Commissioni",comm]
+  ].map(([ic,lab,val])=>`${ic} ${lab}: <strong>${fmtEur(val)}</strong>`).join("<br>");
+ 
+  destroyChart("mini-pie");
+  chartRegistry["mini-pie"] = new Chart(document.getElementById("mini-pie-canvas").getContext("2d"), {
+    type:"doughnut",
+    data:{
+      labels:["Margine","Spese","Tasse","Commissioni"],
+      datasets:[{
+        data:[Math.round(margine),Math.round(speseTot),Math.round(tasse),Math.round(comm)],
+        backgroundColor:["#2E7D32","#c62828","#EF9A9A","#FFCC80"],
+        borderWidth:2,borderColor:"#FDFAF5"
+      }]
+    },
+    options:{
+      responsive:true,cutout:"60%",
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{label:ctx=>" €"+ctx.parsed.toLocaleString("it-IT")}}
+      }
+    }
   });
 }
  
@@ -905,3 +944,4 @@ load();
 </script>
 </body>
 </html>
+ 
