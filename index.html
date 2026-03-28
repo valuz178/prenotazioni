@@ -120,7 +120,14 @@
     </div>
   </div>
   <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-    <button class="btn-ghost" onclick="exportCSV()">⬇ Esporta CSV</button>
+    <div style="position:relative;display:inline-block" id="export-wrap">
+      <button class="btn-ghost" onclick="toggleExportMenu()">⬇ Esporta ▾</button>
+      <div id="export-menu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;background:white;border:1.5px solid var(--border);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,0.12);z-index:100;min-width:180px;overflow:hidden">
+        <button onclick="exportCSV('all')" style="display:block;width:100%;text-align:left;padding:10px 16px;background:none;border:none;font-family:inherit;font-size:14px;cursor:pointer;color:var(--text)" onmouseover="this.style.background='var(--border-light)'" onmouseout="this.style.background='none'">📋 Tutto</button>
+        <button onclick="exportCSV('bookings')" style="display:block;width:100%;text-align:left;padding:10px 16px;background:none;border:none;font-family:inherit;font-size:14px;cursor:pointer;color:var(--text)" onmouseover="this.style.background='var(--border-light)'" onmouseout="this.style.background='none'">💶 Solo prenotazioni</button>
+        <button onclick="exportCSV('spese')" style="display:block;width:100%;text-align:left;padding:10px 16px;background:none;border:none;font-family:inherit;font-size:14px;cursor:pointer;color:var(--text)" onmouseover="this.style.background='var(--border-light)'" onmouseout="this.style.background='none'">🧾 Solo spese</button>
+      </div>
+    </div>
     <label class="btn-ghost" style="cursor:pointer">⬆ Importa CSV<input type="file" accept=".csv" style="display:none" onchange="importCSV(this)"></label>
     <button class="btn-primary" id="btn-nuova" onclick="openForm()">+ Nuova prenotazione</button>
   </div>
@@ -737,18 +744,48 @@ async function importCSV(input) {
 }
  
 // ── Export ────────────────────────────────────────────────────────────
-function exportCSV(){
-  if (!bookings.length){alert("Nessuna prenotazione da esportare.");return;}
-  const header=["Check-in","Check-out","Notti","Lordo (EUR)","Piattaforma","Commissione %","Netto comm.","Netto tasse","Ospiti","Paese","Note"];
-  const rows=bookings.map(b=>{
-    const n=nights(b.check_in,b.check_out),nc=calcNetti(b);
-    return [b.check_in,b.check_out,n!==null?n:"",b.prezzo||"",b.piattaforma||"",nc.commPct||"",Math.round(nc.nettoComm),Math.round(nc.nettoTasse),b.ospiti||"",b.paese||"",b.note||""];
-  });
-  const csv=[header,...rows].map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(",")).join("\n");
-  const blob=new Blob([csv],{type:"text/csv;charset=utf-8;"});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement("a");a.href=url;a.download="prenotazioni_cdf.csv";a.click();
+function toggleExportMenu() {
+  const m = document.getElementById("export-menu");
+  m.style.display = m.style.display === "none" ? "block" : "none";
+}
+document.addEventListener("click", e => {
+  if (!document.getElementById("export-wrap").contains(e.target))
+    document.getElementById("export-menu").style.display = "none";
+});
+ 
+function toCSV(rows) {
+  return rows.map(r => r.map(v => '"' + String(v??'').replace(/"/g,'""') + '"').join(",")).join("\n");
+}
+function download(csv, filename) {
+  const blob = new Blob([csv], {type:"text/csv;charset=utf-8;"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a"); a.href=url; a.download=filename; a.click();
   URL.revokeObjectURL(url);
+}
+ 
+function exportCSV(type) {
+  document.getElementById("export-menu").style.display = "none";
+ 
+  if (type === "bookings" || type === "all") {
+    if (!bookings.length) { alert("Nessuna prenotazione da esportare."); }
+    else {
+      const header = ["Check-in","Check-out","Notti","Lordo (EUR)","Piattaforma","Commissione %","Netto comm.","Netto tasse","Ospiti","Paese","Note"];
+      const rows = bookings.map(b => {
+        const n=nights(b.check_in,b.check_out), nc=calcNetti(b);
+        return [b.check_in,b.check_out,n??'',b.prezzo||'',b.piattaforma||'',nc.commPct||0,Math.round(nc.nettoComm),Math.round(nc.nettoTasse),b.ospiti||'',b.paese||'',b.note||''];
+      });
+      download(toCSV([header,...rows]), "prenotazioni_cdf.csv");
+    }
+  }
+ 
+  if (type === "spese" || type === "all") {
+    if (!spese.length) { alert("Nessuna spesa da esportare."); }
+    else {
+      const header = ["Data","Categoria","Descrizione","Importo (EUR)"];
+      const rows = spese.map(s => [s.data||'', s.categoria||'', s.descrizione||'', s.importo||'']);
+      download(toCSV([header,...rows]), "spese_cdf.csv");
+    }
+  }
 }
  
 // ── Close on backdrop ─────────────────────────────────────────────────
@@ -766,4 +803,3 @@ load();
 </script>
 </body>
 </html>
- 
