@@ -61,7 +61,7 @@
     .year-card .year-sub { font-size: 11px; color: var(--muted); line-height: 1.7; margin-top: 4px; }
  
     .table-wrap { max-width: 1200px; margin-inline: auto; overflow-x: auto; border-radius: 10px; box-shadow: 0 1px 6px rgba(0,0,0,0.07); border: 1px solid var(--border-light); }
-    table { width: 100%; border-collapse: collapse; background: var(--white); min-width: 900px; }
+    table { width: 100%; border-collapse: collapse; background: var(--white); }
     thead tr { background: var(--brown-pale); border-bottom: 2px solid var(--border); }
     th { padding: 11px 12px; text-align: left; font-size: 10px; font-weight: 600; letter-spacing: 0.7px; text-transform: uppercase; color: #666; white-space: nowrap; cursor: pointer; user-select: none; }
     th:hover { color: var(--brown); }
@@ -164,18 +164,14 @@
   <div class="table-wrap" id="table-wrap" style="display:none">
     <table>
       <thead><tr>
+        <th class="no-sort" style="width:32px"></th>
         <th onclick="sortBy('check_in')" id="th-check_in">Check-in</th>
         <th onclick="sortBy('check_out')" id="th-check_out">Check-out</th>
         <th class="no-sort">Notti</th>
         <th onclick="sortBy('prezzo')" id="th-prezzo">Lordo €</th>
         <th onclick="sortBy('piattaforma')" id="th-piattaforma">Piattaforma</th>
-        <th class="no-sort">Comm. %</th>
-        <th class="no-sort">Netto comm.</th>
-        <th class="no-sort">Netto tasse</th>
         <th onclick="sortBy('ospiti')" id="th-ospiti">Ospiti</th>
-        <th onclick="sortBy('paese')" id="th-paese">Paese</th>
-        <th class="no-sort">Note</th>
-        <th class="no-sort"></th>
+        <th class="no-sort">Netto tasse</th>
       </tr></thead>
       <tbody id="tbody"></tbody>
     </table>
@@ -492,14 +488,54 @@ function render() {
     const n=nights(b.check_in,b.check_out);
     const color=PLATFORM_COLORS[b.piattaforma]||"#78909C";
     const nc=calcNetti(b);
-    const noteEsc=(b.note||"").replace(/"/g,"&quot;");
+    const bid=b.id;
+ 
+    // Main row
     const tr=document.createElement("tr");
-    tr.innerHTML=`<td>${fmtDate(b.check_in)}</td><td>${fmtDate(b.check_out)}</td><td class="td-muted">${n!==null?n:"—"}</td><td class="td-lordo">${fmtEur(b.prezzo,true)}</td><td>${b.piattaforma?`<span class="pill" style="background:${color}">${b.piattaforma}</span>`:"—"}</td><td class="td-muted">${nc.commPct>0?nc.commPct+"%":"—"}</td><td class="td-netto">${nc.commPct>0?fmtEur(nc.nettoComm):"—"}</td><td class="td-netto">${fmtEur(nc.nettoTasse)}</td><td>${b.ospiti||"—"}</td><td>${b.paese||"—"}</td><td class="td-note" title="${noteEsc}">${b.note||""}</td><td><button class="icon-btn" onclick="openEdit('${b.id}')">✏️</button><button class="icon-btn" onclick="askDelete('${b.id}','booking')">🗑️</button></td>`;
+    tr.style.cursor="pointer";
+    tr.onclick=()=>toggleRow(bid);
+    tr.id="row-"+bid;
+    tr.innerHTML=`
+      <td style="text-align:center;color:var(--muted);font-size:12px" id="exp-icon-${bid}">▶</td>
+      <td>${fmtDate(b.check_in)}</td>
+      <td>${fmtDate(b.check_out)}</td>
+      <td class="td-muted">${n!==null?n:"—"}</td>
+      <td class="td-lordo">${fmtEur(b.prezzo,true)}</td>
+      <td>${b.piattaforma?`<span class="pill" style="background:${color}">${b.piattaforma}</span>`:"—"}</td>
+      <td>${b.ospiti||"—"}</td>
+      <td class="td-netto">${fmtEur(nc.nettoTasse)}</td>`;
     tbody.appendChild(tr);
+ 
+    // Detail row (hidden)
+    const det=document.createElement("tr");
+    det.id="detail-"+bid;
+    det.style.display="none";
+    det.style.background="#F7F4EE";
+    det.innerHTML=`<td colspan="8" style="padding:0">
+      <div style="padding:14px 18px;display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px 24px;font-size:13px;border-top:1px solid var(--border-light)">
+        <div><span style="font-size:10px;font-weight:600;letter-spacing:.7px;text-transform:uppercase;color:var(--brown)">Paese</span><br>${b.paese||"—"}</div>
+        <div><span style="font-size:10px;font-weight:600;letter-spacing:.7px;text-transform:uppercase;color:var(--brown)">Commissione</span><br>${nc.commPct>0?nc.commPct+"% → "+fmtEur(nc.nettoComm):"—"}</div>
+        <div><span style="font-size:10px;font-weight:600;letter-spacing:.7px;text-transform:uppercase;color:var(--brown)">Tasse (${b.tasse||21}%)</span><br style="margin-bottom:2px">${fmtEur(nc.nettoTasse)}</div>
+        ${b.note?`<div style="grid-column:1/-1"><span style="font-size:10px;font-weight:600;letter-spacing:.7px;text-transform:uppercase;color:var(--brown)">Note</span><br><span style="color:var(--muted);font-style:italic;white-space:pre-wrap">${b.note}</span></div>`:""}
+        <div style="grid-column:1/-1;display:flex;gap:8px;margin-top:4px">
+          <button class="btn-ghost" style="padding:6px 14px;font-size:13px" onclick="event.stopPropagation();openEdit('${bid}')">✏️ Modifica</button>
+          <button class="btn-ghost" style="padding:6px 14px;font-size:13px;color:var(--red);border-color:var(--red)" onclick="event.stopPropagation();askDelete('${bid}','booking')">🗑️ Elimina</button>
+        </div>
+      </div>
+    </td>`;
+    tbody.appendChild(det);
   });
  
   renderSpese();
   renderMiniPie();
+}
+ 
+function toggleRow(id) {
+  const det = document.getElementById("detail-"+id);
+  const icon = document.getElementById("exp-icon-"+id);
+  const open = det.style.display === "none";
+  det.style.display = open ? "table-row" : "none";
+  icon.textContent = open ? "▼" : "▶";
 }
  
 function renderSpese() {
@@ -944,4 +980,3 @@ load();
 </script>
 </body>
 </html>
- 
