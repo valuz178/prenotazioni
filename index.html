@@ -161,7 +161,10 @@
 <!-- TAB SPESE -->
 <div class="tab-content" id="tab-spese">
   <div class="spese-header">
-    <div class="section-title" style="margin:0">Spese operative</div>
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <div class="section-title" style="margin:0">Spese operative</div>
+      <div id="spese-year-filters" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+    </div>
     <button class="btn-primary" onclick="openSpesaForm()">+ Aggiungi spesa</button>
   </div>
   <div id="spese-empty" class="empty">Nessuna spesa registrata.<span>Aggiungi le spese operative man mano che le sostieni.</span></div>
@@ -403,17 +406,34 @@ function render() {
 
 function toggleRow(id) { const det=document.getElementById("detail-"+id),icon=document.getElementById("exp-icon-"+id),open=det.style.display==="none"; det.style.display=open?"table-row":"none"; icon.textContent=open?"▼":"▶"; }
 
+let filterSpesaYear = null;
+
 function renderSpese() {
-  const n=spese.length;
+  // Build year filter buttons
+  const years = [...new Set(spese.map(sp=>sp.data?sp.data.split("-")[0]:null).filter(Boolean))].sort((a,b)=>b-a);
+  const yf = document.getElementById("spese-year-filters");
+  if (yf) {
+    yf.innerHTML = years.map(y =>
+      `<button onclick="setSpesaYear('${y}')" style="padding:3px 12px;border-radius:20px;border:1.5px solid ${filterSpesaYear===y?'var(--brown)':'var(--border)'};background:${filterSpesaYear===y?'var(--brown)':'transparent'};color:${filterSpesaYear===y?'white':'var(--brown-dark)'};font-family:inherit;font-size:12px;cursor:pointer">${y}</button>`
+    ).join("");
+    if (years.length > 1) {
+      yf.innerHTML += `<button onclick="setSpesaYear(null)" style="padding:3px 12px;border-radius:20px;border:1.5px solid ${!filterSpesaYear?'var(--brown)':'var(--border)'};background:${!filterSpesaYear?'var(--brown)':'transparent'};color:${!filterSpesaYear?'white':'var(--brown-dark)'};font-family:inherit;font-size:12px;cursor:pointer">Tutti</button>`;
+    }
+  }
+
+  const filtered = filterSpesaYear ? spese.filter(sp=>sp.data&&sp.data.startsWith(filterSpesaYear)) : spese;
+  const n = filtered.length;
   document.getElementById("spese-empty").style.display=n===0?"block":"none";
   document.getElementById("spese-table-wrap").style.display=n===0?"none":"block";
   const tbody=document.getElementById("spese-tbody"); tbody.innerHTML="";
-  [...spese].sort((a,b)=>(b.data||"").localeCompare(a.data||"")).forEach(sp=>{
+  [...filtered].sort((a,b)=>(b.data||"").localeCompare(a.data||"")).forEach(sp=>{
     const tr=document.createElement("tr");
     tr.innerHTML=`<td>${fmtDate(sp.data)}</td><td><span class="pill" style="background:var(--brown)">${sp.categoria||"—"}</span></td><td class="td-muted">${sp.descrizione||""}</td><td class="td-netto">${fmtEur(sp.importo,true)}</td><td><button class="icon-btn" onclick="openEditSpesa('${sp.id}')">✏️</button><button class="icon-btn" onclick="askDelete('${sp.id}','spesa')">🗑️</button></td>`;
     tbody.appendChild(tr);
   });
 }
+
+function setSpesaYear(y) { filterSpesaYear=y; renderSpese(); }
 
 function renderRiepilogo() {
   const el=document.getElementById("riepilogo-content");
