@@ -23,26 +23,22 @@
     h1 { font-family: 'Playfair Display', serif; font-size: clamp(22px,5vw,30px); font-weight: 700; letter-spacing: -0.5px; }
     .header { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 22px; max-width: 1200px; margin-inline: auto; }
     .subtitle { font-size: 13px; color: var(--muted); font-style: italic; margin-top: 3px; }
- 
     .sync-status { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-style: normal; }
     .sync-ok { background: #E8F5E9; color: #2E7D32; }
     .sync-loading { background: #FFF8E1; color: #F57F17; }
     .sync-error { background: #FFEBEE; color: #c62828; }
- 
     .tabs { max-width: 1200px; margin-inline: auto; display: flex; gap: 0; margin-bottom: 24px; border-bottom: 2px solid var(--border); }
     .tab { padding: 10px 20px; cursor: pointer; font-family: inherit; font-size: 14px; background: none; border: none; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s; }
     .tab.active { color: var(--brown); border-bottom-color: var(--brown); font-weight: 600; }
     .tab:hover { color: var(--brown-dark); }
     .tab-content { display: none; }
     .tab-content.active { display: block; }
- 
     .btn-primary { background: var(--brown); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 14px; transition: background 0.2s; white-space: nowrap; }
     .btn-primary:hover { background: var(--brown-dark); }
     .btn-ghost { background: transparent; border: 1.5px solid var(--border); color: var(--brown-dark); padding: 9px 18px; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 14px; }
     .btn-ghost:hover { background: var(--border-light); }
     .btn-danger { background: var(--red); color: white; border: none; padding: 10px 20px; border-radius: 7px; cursor: pointer; font-family: inherit; font-size: 14px; }
     .btn-danger:hover { background: #a31515; }
- 
     .stats-grid { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; max-width: 1200px; margin-inline: auto; }
     .stat-card { background: var(--white); border: 1px solid var(--border-light); border-radius: 10px; padding: 14px 18px; min-width: 130px; }
     .stat-label { font-size: 10px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; color: var(--brown); margin-bottom: 4px; }
@@ -50,16 +46,16 @@
     .stat-value.green { color: var(--green); }
     .stat-value.red { color: var(--red); }
     .stat-value.orange { color: #E65100; }
- 
     .yearly-wrap { max-width: 1200px; margin-inline: auto; margin-bottom: 24px; }
     .section-title { font-size: 10px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; color: var(--brown); margin-bottom: 10px; }
     .yearly-grid { display: flex; gap: 10px; flex-wrap: wrap; }
-    .year-card { background: var(--white); border: 1px solid var(--border-light); border-radius: 10px; padding: 14px 18px; min-width: 200px; position: relative; overflow: hidden; }
+    .year-card { background: var(--white); border: 1px solid var(--border-light); border-radius: 10px; padding: 14px 18px; min-width: 200px; position: relative; overflow: hidden; cursor: pointer; transition: border-color 0.2s; }
+    .year-card:hover { border-color: var(--brown); }
+    .year-card.selected { border-color: var(--brown); box-shadow: 0 0 0 2px rgba(139,111,71,0.2); }
     .year-card::before { content: attr(data-year); position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-family: 'Playfair Display', serif; font-size: 48px; font-weight: 700; color: var(--border-light); line-height: 1; pointer-events: none; }
     .year-card .year-rev { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; color: var(--green); }
     .year-card .year-net { font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 600; color: #E65100; margin-top: 2px; }
     .year-card .year-sub { font-size: 11px; color: var(--muted); line-height: 1.7; margin-top: 4px; }
- 
     .table-wrap { max-width: 1200px; margin-inline: auto; overflow-x: auto; border-radius: 10px; box-shadow: 0 1px 6px rgba(0,0,0,0.07); border: 1px solid var(--border-light); }
     table { width: 100%; border-collapse: collapse; background: var(--white); }
     thead tr { background: var(--brown-pale); border-bottom: 2px solid var(--border); }
@@ -74,15 +70,12 @@
     .td-lordo { font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 600; color: var(--green); }
     .td-netto { font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 600; color: #E65100; }
     .td-muted { color: var(--muted); }
-    .td-note { max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); font-style: italic; font-size: 12px; }
     .pill { display: inline-block; padding: 2px 9px; border-radius: 20px; color: white; font-size: 10px; white-space: nowrap; }
     .icon-btn { background: none; border: none; cursor: pointer; padding: 4px 5px; border-radius: 4px; font-size: 14px; transition: background 0.15s; }
     .icon-btn:hover { background: #ddd5c8; }
- 
     .spese-header { max-width: 1200px; margin-inline: auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
     .empty { text-align: center; padding: 56px 20px; background: var(--white); border-radius: 12px; border: 1.5px dashed var(--border); font-style: italic; color: #aaa; max-width: 1200px; margin-inline: auto; }
     .empty span { display: block; font-size: 13px; margin-top: 6px; }
- 
     .overlay { display: none; position: fixed; inset: 0; background: rgba(30,20,10,0.5); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
     .overlay.open { display: flex; }
     .modal { background: var(--card); border-radius: 14px; padding: 28px 24px; width: 100%; max-width: 520px; box-shadow: 0 20px 60px rgba(0,0,0,0.25); max-height: 92vh; overflow-y: auto; }
@@ -98,12 +91,10 @@
     .field-hint { font-size: 11px; color: var(--muted); margin-top: 2px; font-style: italic; }
     .netto-preview { background: var(--brown-pale); border-radius: 8px; padding: 12px 14px; margin-top: 4px; font-size: 13px; line-height: 1.8; }
     .netto-preview strong { font-family: 'Playfair Display', serif; }
- 
     .confirm-overlay { display: none; position: fixed; inset: 0; background: rgba(30,20,10,0.5); z-index: 300; align-items: center; justify-content: center; padding: 20px; }
     .confirm-overlay.open { display: flex; }
     .confirm-box { background: var(--card); border-radius: 12px; padding: 28px 24px; max-width: 300px; width: 100%; text-align: center; box-shadow: 0 12px 40px rgba(0,0,0,0.2); }
     .confirm-box p { font-size: 15px; margin-bottom: 20px; line-height: 1.5; }
- 
     @media (max-width: 500px) {
       .grid2 { grid-template-columns: 1fr; }
       body { padding: 16px 12px 100px; }
@@ -112,7 +103,7 @@
   </style>
 </head>
 <body>
- 
+
 <div class="header">
   <div>
     <h1>Corni di Fiasco</h1>
@@ -133,31 +124,20 @@
     <button class="btn-primary" id="btn-nuova" onclick="openForm()">+ Nuova prenotazione</button>
   </div>
 </div>
- 
+
 <div class="tabs">
   <button class="tab active" onclick="switchTab('prenotazioni')">Prenotazioni</button>
   <button class="tab" onclick="switchTab('spese')">Spese operative</button>
   <button class="tab" onclick="switchTab('riepilogo')">Riepilogo</button>
 </div>
- 
+
 <!-- TAB PRENOTAZIONI -->
 <div class="tab-content active" id="tab-prenotazioni">
   <div id="stats-box" style="display:none">
     <div class="stats-grid" id="stats-grid"></div>
     <div class="yearly-wrap">
-      <div class="section-title">Anno per anno</div>
+      <div class="section-title">Anno per anno — clicca per filtrare</div>
       <div class="yearly-grid" id="yearly-grid"></div>
-    </div>
-  </div>
-  <div id="mini-pie-wrap" style="display:none;max-width:1200px;margin-inline:auto;margin-bottom:20px">
-    <div style="background:var(--white);border:1px solid var(--border-light);border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap">
-      <div style="flex:1;min-width:200px">
-        <div class="section-title" style="margin-bottom:6px" id="mini-pie-title">Anno in corso</div>
-        <div id="mini-pie-legend" style="font-size:12px;color:var(--muted);line-height:1.9"></div>
-      </div>
-      <div style="width:130px;height:130px;flex-shrink:0">
-        <canvas id="mini-pie-canvas"></canvas>
-      </div>
     </div>
   </div>
   <div id="empty-state" class="empty">Nessuna prenotazione ancora.<span>Tocca "+ Nuova prenotazione" per iniziare.</span></div>
@@ -177,7 +157,7 @@
     </table>
   </div>
 </div>
- 
+
 <!-- TAB SPESE -->
 <div class="tab-content" id="tab-spese">
   <div class="spese-header">
@@ -198,12 +178,12 @@
     </table>
   </div>
 </div>
- 
+
 <!-- TAB RIEPILOGO -->
 <div class="tab-content" id="tab-riepilogo">
   <div id="riepilogo-content" style="max-width:1200px;margin-inline:auto"></div>
 </div>
- 
+
 <!-- Modal prenotazione -->
 <div class="overlay" id="overlay">
   <div class="modal">
@@ -242,7 +222,7 @@
     </div>
   </div>
 </div>
- 
+
 <!-- Modal spesa -->
 <div class="overlay" id="overlay-spesa">
   <div class="modal">
@@ -269,7 +249,7 @@
     </div>
   </div>
 </div>
- 
+
 <!-- Confirm -->
 <div class="confirm-overlay" id="confirm-overlay">
   <div class="confirm-box">
@@ -280,270 +260,153 @@
     </div>
   </div>
 </div>
- 
+
 <script>
-// ── Supabase config ───────────────────────────────────────────────────
 const SUPA_URL = "https://lrvkcjdcsarxpwrdowvz.supabase.co";
 const SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxydmtjamRjc2FyeHB3cmRvd3Z6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2OTI3NjEsImV4cCI6MjA5MDI2ODc2MX0._grQzu38uQ8UOAYCotmmm1ut2v_ywq5uOkrjYs4nK2o";
- 
-const headers = {
-  "Content-Type": "application/json",
-  "apikey": SUPA_KEY,
-  "Authorization": "Bearer " + SUPA_KEY,
-  "Prefer": "return=representation"
-};
- 
-async function dbGet(table) {
-  const r = await fetch(`${SUPA_URL}/rest/v1/${table}?order=check_in.asc`, { headers });
-  if (!r.ok) throw new Error(await r.text());
-  return r.json();
-}
-async function dbGetSpese() {
-  const r = await fetch(`${SUPA_URL}/rest/v1/spese?order=data.desc`, { headers });
-  if (!r.ok) throw new Error(await r.text());
-  return r.json();
-}
-async function dbInsert(table, row) {
-  const r = await fetch(`${SUPA_URL}/rest/v1/${table}`, { method:"POST", headers, body: JSON.stringify(row) });
-  if (!r.ok) throw new Error(await r.text());
-  return r.json();
-}
-async function dbUpdate(table, id, row) {
-  const r = await fetch(`${SUPA_URL}/rest/v1/${table}?id=eq.${id}`, { method:"PATCH", headers, body: JSON.stringify(row) });
-  if (!r.ok) throw new Error(await r.text());
-  return r.json();
-}
-async function dbDelete(table, id) {
-  const r = await fetch(`${SUPA_URL}/rest/v1/${table}?id=eq.${id}`, { method:"DELETE", headers });
-  if (!r.ok) throw new Error(await r.text());
-}
- 
-// ── App state ─────────────────────────────────────────────────────────
+const headers = { "Content-Type":"application/json","apikey":SUPA_KEY,"Authorization":"Bearer "+SUPA_KEY,"Prefer":"return=representation" };
+
+async function dbGet(table) { const r=await fetch(`${SUPA_URL}/rest/v1/${table}?order=check_in.asc`,{headers}); if(!r.ok) throw new Error(await r.text()); return r.json(); }
+async function dbGetSpese() { const r=await fetch(`${SUPA_URL}/rest/v1/spese?order=data.desc`,{headers}); if(!r.ok) throw new Error(await r.text()); return r.json(); }
+async function dbInsert(table,row) { const r=await fetch(`${SUPA_URL}/rest/v1/${table}`,{method:"POST",headers,body:JSON.stringify(row)}); if(!r.ok) throw new Error(await r.text()); return r.json(); }
+async function dbUpdate(table,id,row) { const r=await fetch(`${SUPA_URL}/rest/v1/${table}?id=eq.${id}`,{method:"PATCH",headers,body:JSON.stringify(row)}); if(!r.ok) throw new Error(await r.text()); return r.json(); }
+async function dbDelete(table,id) { const r=await fetch(`${SUPA_URL}/rest/v1/${table}?id=eq.${id}`,{method:"DELETE",headers}); if(!r.ok) throw new Error(await r.text()); }
+
 const TASSA_DEFAULT = 21;
-const PLATFORM_COLORS = {
-  "Airbnb":"#FF5A5F","Oazo Homes":"#E87722","Nice2Stay":"#5B8DB8",
-  "Plum Guide":"#1A1A2E","Oliver's Travels":"#4A7C59",
-  "Urlaubsarchitektur":"#C0392B","Sito diretto":"#8B6F47","Altro":"#78909C"
-};
-const PLATFORM_COMM = {
-  "Airbnb":15.5,"Oazo Homes":3,"Nice2Stay":21,
-  "Plum Guide":null,"Oliver's Travels":null,
-  "Urlaubsarchitektur":0,"Sito diretto":0,"Altro":null
-};
-const PLATFORM_COMM_NOTE = {
-  "Airbnb":"15,5% host-only (2025)",
-  "Oazo Homes":"3% — fee club svizzero",
-  "Nice2Stay":"21%",
-  "Plum Guide":"Verifica nel tuo contratto",
-  "Oliver's Travels":"Verifica nel tuo contratto",
-  "Urlaubsarchitektur":"Fee annuale fissa, nessuna commissione per prenotazione",
-  "Sito diretto":"Nessuna commissione",
-  "Altro":""
-};
- 
-let bookings = [], spese = [];
-let editId = null, editSpesaId = null, deleteId = null, deleteType = null;
-let sortKey = "check_in", sortDir = "asc";
- 
-// ── Sync status ───────────────────────────────────────────────────────
-function setSyncStatus(state, msg) {
-  const el = document.getElementById("sync-badge");
-  el.className = "sync-status sync-" + state;
-  el.textContent = msg;
-}
- 
-// ── Load ──────────────────────────────────────────────────────────────
+const PLATFORM_COLORS = { "Airbnb":"#FF5A5F","Oazo Homes":"#E87722","Nice2Stay":"#5B8DB8","Plum Guide":"#1A1A2E","Oliver's Travels":"#4A7C59","Urlaubsarchitektur":"#C0392B","Sito diretto":"#8B6F47","Altro":"#78909C" };
+const PLATFORM_COMM = { "Airbnb":15.5,"Oazo Homes":3,"Nice2Stay":21,"Plum Guide":null,"Oliver's Travels":null,"Urlaubsarchitektur":0,"Sito diretto":0,"Altro":null };
+const PLATFORM_COMM_NOTE = { "Airbnb":"15,5% host-only (2025)","Oazo Homes":"3% — fee club svizzero","Nice2Stay":"21%","Plum Guide":"Verifica nel tuo contratto","Oliver's Travels":"Verifica nel tuo contratto","Urlaubsarchitektur":"Fee annuale fissa, nessuna commissione per prenotazione","Sito diretto":"Nessuna commissione","Altro":"" };
+
+let bookings=[], spese=[];
+let editId=null, editSpesaId=null, deleteId=null, deleteType=null;
+let sortKey="check_in", sortDir="asc";
+let filterYear=null; // null = tutti gli anni
+
+const chartRegistry = {};
+function destroyChart(id) { if(chartRegistry[id]){ chartRegistry[id].destroy(); delete chartRegistry[id]; } }
+
+function setSyncStatus(state,msg) { const el=document.getElementById("sync-badge"); el.className="sync-status sync-"+state; el.textContent=msg; }
+
 async function load() {
-  setSyncStatus("loading", "⟳ caricamento…");
+  setSyncStatus("loading","⟳ caricamento…");
   try {
-    [bookings, spese] = await Promise.all([dbGet("prenotazioni"), dbGetSpese()]);
-    setSyncStatus("ok", "✓ sincronizzato");
+    [bookings,spese] = await Promise.all([dbGet("prenotazioni"),dbGetSpese()]);
+    // default: seleziona anno corrente se esiste
+    const currentYear = new Date().getFullYear().toString();
+    const years = [...new Set(bookings.map(yearOf).filter(Boolean))];
+    filterYear = years.includes(currentYear) ? currentYear : (years.sort().pop()||null);
+    setSyncStatus("ok","✓ sincronizzato");
     render();
-  } catch(e) {
-    setSyncStatus("error", "✗ errore connessione");
-    console.error(e);
-    updateSubtitle();
-  }
+  } catch(e) { setSyncStatus("error","✗ errore connessione"); console.error(e); }
 }
- 
-function updateSubtitle() {
-  const n = bookings.length;
-  document.getElementById("subtitle").innerHTML =
-    `${n===0?"Nessuna prenotazione":`${n} prenotazion${n===1?"e":"i"} · ${spese.length} spese`} <span class="sync-status ${document.getElementById("sync-badge").className.includes("ok")?"sync-ok":"sync-error"}" id="sync-badge">${document.getElementById("sync-badge").textContent}</span>`;
-}
- 
-// ── Helpers ───────────────────────────────────────────────────────────
-function nights(a,b) {
-  if (!a||!b) return null;
-  const n = Math.round((new Date(b)-new Date(a))/86400000);
-  return n>0?n:null;
-}
-function fmtDate(d) {
-  if (!d) return "";
-  const [y,m,day] = d.split("-");
-  return `${day}/${m}/${y}`;
-}
-function fmtEur(v, dash) {
-  const n = parseFloat(v);
-  if (isNaN(n)) return dash?"—":"";
-  return "€"+n.toLocaleString("it-IT",{minimumFractionDigits:0,maximumFractionDigits:0});
-}
+
+function nights(a,b) { if(!a||!b) return null; const n=Math.round((new Date(b)-new Date(a))/86400000); return n>0?n:null; }
+function fmtDate(d) { if(!d) return ""; const [y,m,day]=d.split("-"); return `${day}/${m}/${y}`; }
+function fmtEur(v,dash) { const n=parseFloat(v); if(isNaN(n)) return dash?"—":""; return "€"+n.toLocaleString("it-IT",{minimumFractionDigits:0,maximumFractionDigits:0}); }
 function yearOf(b) { return (b.check_in||"").split("-")[0]||null; }
 function calcNetti(b) {
-  const lordo    = parseFloat(b.prezzo)||0;
-  const commPct  = parseFloat(b.commissione)||0;
-  const tassaPct = parseFloat(b.tasse)??TASSA_DEFAULT;
-  const nettoComm  = lordo*(1-commPct/100);
-  const nettoTasse = nettoComm*(1-tassaPct/100);
+  const lordo=parseFloat(b.prezzo)||0, commPct=parseFloat(b.commissione)||0, tassaPct=parseFloat(b.tasse)??TASSA_DEFAULT;
+  const nettoComm=lordo*(1-commPct/100), nettoTasse=nettoComm*(1-tassaPct/100);
   return {lordo,commPct,tassaPct,nettoComm,nettoTasse};
 }
- 
-// ── Tabs ──────────────────────────────────────────────────────────────
+
 function switchTab(name) {
-  const tabs = ["prenotazioni","spese","riepilogo"];
+  const tabs=["prenotazioni","spese","riepilogo"];
   document.querySelectorAll(".tab").forEach((t,i)=>t.classList.toggle("active",tabs[i]===name));
   document.querySelectorAll(".tab-content").forEach(t=>t.classList.remove("active"));
   document.getElementById("tab-"+name).classList.add("active");
-  document.getElementById("btn-nuova").style.display = name==="prenotazioni"?"":"none";
-  if (name==="riepilogo") renderRiepilogo();
+  document.getElementById("btn-nuova").style.display=name==="prenotazioni"?"":"none";
+  if(name==="riepilogo") renderRiepilogo();
 }
- 
-// ── Sort ──────────────────────────────────────────────────────────────
+
 function sortBy(key) {
-  if (sortKey===key) sortDir = sortDir==="asc"?"desc":"asc";
-  else { sortKey=key; sortDir="asc"; }
+  if(sortKey===key) sortDir=sortDir==="asc"?"desc":"asc"; else { sortKey=key; sortDir="asc"; }
   render();
 }
 function getSorted() {
-  return [...bookings].sort((a,b)=>{
+  const filtered = filterYear ? bookings.filter(b=>yearOf(b)===filterYear) : bookings;
+  return [...filtered].sort((a,b)=>{
     let va=a[sortKey]??"", vb=b[sortKey]??"";
-    if (["prezzo","ospiti","commissione"].includes(sortKey)){va=parseFloat(va)||0;vb=parseFloat(vb)||0;}
-    if (va<vb) return sortDir==="asc"?-1:1;
-    if (va>vb) return sortDir==="asc"?1:-1;
-    return 0;
+    if(["prezzo","ospiti","commissione"].includes(sortKey)){va=parseFloat(va)||0;vb=parseFloat(vb)||0;}
+    if(va<vb) return sortDir==="asc"?-1:1; if(va>vb) return sortDir==="asc"?1:-1; return 0;
   });
 }
- 
-// ── Render ────────────────────────────────────────────────────────────
+
+function setFilterYear(y) {
+  filterYear = filterYear===y ? null : y; // toggle: click di nuovo = mostra tutti
+  render();
+}
+
 function render() {
-  const n = bookings.length;
-  const badge = document.getElementById("sync-badge");
+  const n=bookings.length;
+  const badge=document.getElementById("sync-badge");
+  const filtered = filterYear ? bookings.filter(b=>yearOf(b)===filterYear) : bookings;
   document.getElementById("subtitle").innerHTML =
-    `${n===0?"Nessuna prenotazione":`${n} prenotazion${n===1?"e":"i"} · ${spese.length} spese`} <span class="sync-status ${badge.className}" id="sync-badge">${badge.textContent}</span>`;
- 
-  document.getElementById("empty-state").style.display = n===0?"block":"none";
-  document.getElementById("table-wrap").style.display  = n===0?"none":"block";
-  document.getElementById("stats-box").style.display   = n===0?"none":"block";
- 
-  if (n>0) {
-    const totalLordo  = bookings.reduce((s,b)=>s+(parseFloat(b.prezzo)||0),0);
-    const totalNotti  = bookings.reduce((s,b)=>s+(nights(b.check_in,b.check_out)||0),0);
-    const totalNettoC = bookings.reduce((s,b)=>s+calcNetti(b).nettoComm,0);
-    const totalNettoT = bookings.reduce((s,b)=>s+calcNetti(b).nettoTasse,0);
-    const totalSpese  = spese.reduce((s,sp)=>s+(parseFloat(sp.importo)||0),0);
-    const margine     = totalNettoT-totalSpese;
- 
-    document.getElementById("stats-grid").innerHTML = `
-      <div class="stat-card"><div class="stat-label">Lordo totale</div><div class="stat-value green">${fmtEur(totalLordo)}</div></div>
+    `${n===0?"Nessuna prenotazione":`${n} prenotazion${n===1?"e":"i"} · ${spese.length} spese`}${filterYear?` <strong style="color:var(--brown)">${filterYear}</strong>`:""} <span class="sync-status ${badge.className}" id="sync-badge">${badge.textContent}</span>`;
+
+  document.getElementById("empty-state").style.display=n===0?"block":"none";
+  document.getElementById("table-wrap").style.display=n===0?"none":"block";
+  document.getElementById("stats-box").style.display=n===0?"none":"block";
+
+  if(n>0) {
+    // Stats sul set filtrato
+    const src = filtered;
+    const totalLordo=src.reduce((s,b)=>s+(parseFloat(b.prezzo)||0),0);
+    const totalNotti=src.reduce((s,b)=>s+(nights(b.check_in,b.check_out)||0),0);
+    const totalNettoC=src.reduce((s,b)=>s+calcNetti(b).nettoComm,0);
+    const totalNettoT=src.reduce((s,b)=>s+calcNetti(b).nettoTasse,0);
+    const speseSrc = filterYear ? spese.filter(sp=>sp.data&&sp.data.startsWith(filterYear)) : spese;
+    const totalSpese=speseSrc.reduce((s,sp)=>s+(parseFloat(sp.importo)||0),0);
+    const margine=totalNettoT-totalSpese;
+    document.getElementById("stats-grid").innerHTML=`
+      <div class="stat-card"><div class="stat-label">Lordo${filterYear?" "+filterYear:""}</div><div class="stat-value green">${fmtEur(totalLordo)}</div></div>
       <div class="stat-card"><div class="stat-label">Netto comm.</div><div class="stat-value orange">${fmtEur(totalNettoC)}</div></div>
       <div class="stat-card"><div class="stat-label">Netto tasse</div><div class="stat-value orange">${fmtEur(totalNettoT)}</div></div>
-      <div class="stat-card"><div class="stat-label">Spese operative</div><div class="stat-value red">${fmtEur(totalSpese)}</div></div>
-      <div class="stat-card"><div class="stat-label">Margine netto</div><div class="stat-value ${margine>=0?"green":"red"}">${fmtEur(margine)}</div></div>
-      <div class="stat-card"><div class="stat-label">Notti totali</div><div class="stat-value">${totalNotti||"—"}</div></div>
-      <div class="stat-card"><div class="stat-label">Media/notte lordo</div><div class="stat-value">${totalNotti>0?fmtEur(totalLordo/totalNotti):"—"}</div></div>`;
- 
-    // Anno per anno
+      <div class="stat-card"><div class="stat-label">Spese</div><div class="stat-value red">${fmtEur(totalSpese)}</div></div>
+      <div class="stat-card"><div class="stat-label">Margine</div><div class="stat-value ${margine>=0?"green":"red"}">${fmtEur(margine)}</div></div>
+      <div class="stat-card"><div class="stat-label">Notti</div><div class="stat-value">${totalNotti||"—"}</div></div>
+      <div class="stat-card"><div class="stat-label">Media/notte</div><div class="stat-value">${totalNotti>0?fmtEur(totalLordo/totalNotti):"—"}</div></div>`;
+
+    // Year cards
     const byYear={}, yearlySp={};
-    bookings.forEach(b=>{
-      const y=yearOf(b); if(!y) return;
-      if(!byYear[y]) byYear[y]={lordo:0,nettoC:0,nettoT:0,notti:0,count:0};
-      const nc=calcNetti(b);
-      byYear[y].lordo+=nc.lordo; byYear[y].nettoC+=nc.nettoComm;
-      byYear[y].nettoT+=nc.nettoTasse; byYear[y].notti+=nights(b.check_in,b.check_out)||0;
-      byYear[y].count++;
-    });
-    spese.forEach(sp=>{
-      const y=sp.data?sp.data.split("-")[0]:null; if(!y) return;
-      yearlySp[y]=(yearlySp[y]||0)+(parseFloat(sp.importo)||0);
-    });
+    bookings.forEach(b=>{ const y=yearOf(b); if(!y) return; if(!byYear[y]) byYear[y]={lordo:0,nettoT:0,notti:0,count:0}; const nc=calcNetti(b); byYear[y].lordo+=nc.lordo; byYear[y].nettoT+=nc.nettoTasse; byYear[y].notti+=nights(b.check_in,b.check_out)||0; byYear[y].count++; });
+    spese.forEach(sp=>{ const y=sp.data?sp.data.split("-")[0]:null; if(!y) return; yearlySp[y]=(yearlySp[y]||0)+(parseFloat(sp.importo)||0); });
     const yg=document.getElementById("yearly-grid"); yg.innerHTML="";
     Object.keys(byYear).sort((a,b)=>b-a).forEach(y=>{
       const d=byYear[y], sp=yearlySp[y]||0, mg=d.nettoT-sp;
       const card=document.createElement("div");
-      card.className="year-card"; card.setAttribute("data-year",y);
+      card.className="year-card"+(filterYear===y?" selected":"");
+      card.setAttribute("data-year",y);
+      card.onclick=()=>setFilterYear(y);
       card.innerHTML=`<div class="year-rev">${fmtEur(d.lordo)} lordo</div><div class="year-net">${fmtEur(d.nettoT)} netto tasse</div><div class="year-sub">${d.count} prenotazion${d.count===1?"e":"i"} · ${d.notti} notti<br>Spese: ${fmtEur(sp,true)} · Margine: <strong style="color:${mg>=0?"#2E7D32":"#c62828"}">${fmtEur(mg)}</strong></div>`;
       yg.appendChild(card);
     });
   }
- 
+
   // Sort headers
-  document.querySelectorAll("th[id]").forEach(th=>{
-    const k=th.id.replace("th-","");
-    th.classList.toggle("active",k===sortKey);
-    const base=th.textContent.replace(/ [▲▼⇅]$/,"");
-    th.textContent=base+(k===sortKey?(sortDir==="asc"?" ▲":" ▼"):" ⇅");
-  });
- 
+  document.querySelectorAll("th[id]").forEach(th=>{ const k=th.id.replace("th-",""); th.classList.toggle("active",k===sortKey); const base=th.textContent.replace(/ [▲▼⇅]$/,""); th.textContent=base+(k===sortKey?(sortDir==="asc"?" ▲":" ▼"):" ⇅"); });
+
   // Rows
   const tbody=document.getElementById("tbody"); tbody.innerHTML="";
   getSorted().forEach(b=>{
-    const n=nights(b.check_in,b.check_out);
-    const color=PLATFORM_COLORS[b.piattaforma]||"#78909C";
-    const nc=calcNetti(b);
-    const bid=b.id;
- 
-    // Main row
-    const tr=document.createElement("tr");
-    tr.style.cursor="pointer";
-    tr.onclick=()=>toggleRow(bid);
-    tr.id="row-"+bid;
-    tr.innerHTML=`
-      <td style="text-align:center;color:var(--muted);font-size:12px" id="exp-icon-${bid}">▶</td>
-      <td>${fmtDate(b.check_in)}</td>
-      <td>${fmtDate(b.check_out)}</td>
-      <td class="td-muted">${n!==null?n:"—"}</td>
-      <td class="td-lordo">${fmtEur(b.prezzo,true)}</td>
-      <td>${b.piattaforma?`<span class="pill" style="background:${color}">${b.piattaforma}</span>`:"—"}</td>
-      <td>${b.ospiti||"—"}</td>
-      <td class="td-netto">${fmtEur(nc.nettoTasse)}</td>`;
+    const n=nights(b.check_in,b.check_out), color=PLATFORM_COLORS[b.piattaforma]||"#78909C", nc=calcNetti(b), bid=b.id;
+    const tr=document.createElement("tr"); tr.style.cursor="pointer"; tr.onclick=()=>toggleRow(bid); tr.id="row-"+bid;
+    tr.innerHTML=`<td style="text-align:center;color:var(--muted);font-size:12px" id="exp-icon-${bid}">▶</td><td>${fmtDate(b.check_in)}</td><td>${fmtDate(b.check_out)}</td><td class="td-muted">${n!==null?n:"—"}</td><td class="td-lordo">${fmtEur(b.prezzo,true)}</td><td>${b.piattaforma?`<span class="pill" style="background:${color}">${b.piattaforma}</span>`:"—"}</td><td>${b.ospiti||"—"}</td><td class="td-netto">${fmtEur(nc.nettoTasse)}</td>`;
     tbody.appendChild(tr);
- 
-    // Detail row (hidden)
-    const det=document.createElement("tr");
-    det.id="detail-"+bid;
-    det.style.display="none";
-    det.style.background="#F7F4EE";
-    det.innerHTML=`<td colspan="8" style="padding:0">
-      <div style="padding:14px 18px;display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px 24px;font-size:13px;border-top:1px solid var(--border-light)">
-        <div><span style="font-size:10px;font-weight:600;letter-spacing:.7px;text-transform:uppercase;color:var(--brown)">Paese</span><br>${b.paese||"—"}</div>
-        <div><span style="font-size:10px;font-weight:600;letter-spacing:.7px;text-transform:uppercase;color:var(--brown)">Commissione</span><br>${nc.commPct>0?nc.commPct+"% → "+fmtEur(nc.nettoComm):"—"}</div>
-        <div><span style="font-size:10px;font-weight:600;letter-spacing:.7px;text-transform:uppercase;color:var(--brown)">Tasse (${b.tasse||21}%)</span><br style="margin-bottom:2px">${fmtEur(nc.nettoTasse)}</div>
-        ${b.note?`<div style="grid-column:1/-1"><span style="font-size:10px;font-weight:600;letter-spacing:.7px;text-transform:uppercase;color:var(--brown)">Note</span><br><span style="color:var(--muted);font-style:italic;white-space:pre-wrap">${b.note}</span></div>`:""}
-        <div style="grid-column:1/-1;display:flex;gap:8px;margin-top:4px">
-          <button class="btn-ghost" style="padding:6px 14px;font-size:13px" onclick="event.stopPropagation();openEdit('${bid}')">✏️ Modifica</button>
-          <button class="btn-ghost" style="padding:6px 14px;font-size:13px;color:var(--red);border-color:var(--red)" onclick="event.stopPropagation();askDelete('${bid}','booking')">🗑️ Elimina</button>
-        </div>
-      </div>
-    </td>`;
+    const det=document.createElement("tr"); det.id="detail-"+bid; det.style.display="none"; det.style.background="#F7F4EE";
+    det.innerHTML=`<td colspan="8" style="padding:0"><div style="padding:14px 18px;display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px 24px;font-size:13px;border-top:1px solid var(--border-light)"><div><span style="font-size:10px;font-weight:600;letter-spacing:.7px;text-transform:uppercase;color:var(--brown)">Paese</span><br>${b.paese||"—"}</div><div><span style="font-size:10px;font-weight:600;letter-spacing:.7px;text-transform:uppercase;color:var(--brown)">Commissione</span><br>${nc.commPct>0?nc.commPct+"% → "+fmtEur(nc.nettoComm):"—"}</div><div><span style="font-size:10px;font-weight:600;letter-spacing:.7px;text-transform:uppercase;color:var(--brown)">Tasse (${b.tasse||21}%)</span><br>${fmtEur(nc.nettoTasse)}</div>${b.note?`<div style="grid-column:1/-1"><span style="font-size:10px;font-weight:600;letter-spacing:.7px;text-transform:uppercase;color:var(--brown)">Note</span><br><span style="color:var(--muted);font-style:italic;white-space:pre-wrap">${b.note}</span></div>`:""}<div style="grid-column:1/-1;display:flex;gap:8px;margin-top:4px"><button class="btn-ghost" style="padding:6px 14px;font-size:13px" onclick="event.stopPropagation();openEdit('${bid}')">✏️ Modifica</button><button class="btn-ghost" style="padding:6px 14px;font-size:13px;color:var(--red);border-color:var(--red)" onclick="event.stopPropagation();askDelete('${bid}','booking')">🗑️ Elimina</button></div></div></td>`;
     tbody.appendChild(det);
   });
- 
+
   renderSpese();
-  renderMiniPie();
 }
- 
-function toggleRow(id) {
-  const det = document.getElementById("detail-"+id);
-  const icon = document.getElementById("exp-icon-"+id);
-  const open = det.style.display === "none";
-  det.style.display = open ? "table-row" : "none";
-  icon.textContent = open ? "▼" : "▶";
-}
- 
+
+function toggleRow(id) { const det=document.getElementById("detail-"+id),icon=document.getElementById("exp-icon-"+id),open=det.style.display==="none"; det.style.display=open?"table-row":"none"; icon.textContent=open?"▼":"▶"; }
+
 function renderSpese() {
   const n=spese.length;
-  document.getElementById("spese-empty").style.display      = n===0?"block":"none";
-  document.getElementById("spese-table-wrap").style.display = n===0?"none":"block";
+  document.getElementById("spese-empty").style.display=n===0?"block":"none";
+  document.getElementById("spese-table-wrap").style.display=n===0?"none":"block";
   const tbody=document.getElementById("spese-tbody"); tbody.innerHTML="";
   [...spese].sort((a,b)=>(b.data||"").localeCompare(a.data||"")).forEach(sp=>{
     const tr=document.createElement("tr");
@@ -551,50 +414,42 @@ function renderSpese() {
     tbody.appendChild(tr);
   });
 }
- 
-// ── Riepilogo ─────────────────────────────────────────────────────────
-// chart instances registry
-const chartRegistry = {};
-function destroyChart(id) { if (chartRegistry[id]) { chartRegistry[id].destroy(); delete chartRegistry[id]; } }
- 
+
 function renderRiepilogo() {
-  const el = document.getElementById("riepilogo-content");
-  if (!bookings.length) { el.innerHTML = `<div class="empty">Nessun dato ancora.</div>`; return; }
- 
-  const years = [...new Set(bookings.map(yearOf).filter(Boolean))].sort((a,b) => b-a);
- 
-  const allYearsData = years.map(y => {
-    const yb = bookings.filter(b => yearOf(b)===y);
-    const ys = spese.filter(sp => sp.data && sp.data.startsWith(y));
-    const lordo    = yb.reduce((s,b)=>s+(parseFloat(b.prezzo)||0),0);
-    const nettoC   = yb.reduce((s,b)=>s+calcNetti(b).nettoComm,0);
-    const nettoT   = yb.reduce((s,b)=>s+calcNetti(b).nettoTasse,0);
-    const comm     = lordo-nettoC;
-    const tasse    = nettoC-nettoT;
-    const speseTot = ys.reduce((s,sp)=>s+(parseFloat(sp.importo)||0),0);
-    const margine  = nettoT-speseTot;
-    const notti    = yb.reduce((s,b)=>s+(nights(b.check_in,b.check_out)||0),0);
-    const catMap   = {};
+  const el=document.getElementById("riepilogo-content");
+  if(!bookings.length){el.innerHTML=`<div class="empty">Nessun dato ancora.</div>`;return;}
+  const years=[...new Set(bookings.map(yearOf).filter(Boolean))].sort((a,b)=>b-a);
+  const allData=years.map(y=>{
+    const yb=bookings.filter(b=>yearOf(b)===y), ys=spese.filter(sp=>sp.data&&sp.data.startsWith(y));
+    const lordo=yb.reduce((s,b)=>s+(parseFloat(b.prezzo)||0),0);
+    const nettoC=yb.reduce((s,b)=>s+calcNetti(b).nettoComm,0);
+    const nettoT=yb.reduce((s,b)=>s+calcNetti(b).nettoTasse,0);
+    const comm=lordo-nettoC, tasse=nettoC-nettoT;
+    const speseTot=ys.reduce((s,sp)=>s+(parseFloat(sp.importo)||0),0);
+    const margine=nettoT-speseTot, notti=yb.reduce((s,b)=>s+(nights(b.check_in,b.check_out)||0),0);
+    const catMap={}, platMap={};
     ys.forEach(sp=>{const cat=sp.categoria||"Altro";catMap[cat]=(catMap[cat]||0)+(parseFloat(sp.importo)||0);});
-    const platMap  = {};
     yb.forEach(b=>{const p=b.piattaforma||"N/D";if(!platMap[p])platMap[p]={count:0,lordo:0};platMap[p].count++;platMap[p].lordo+=parseFloat(b.prezzo)||0;});
     return {y,lordo,nettoC,nettoT,comm,tasse,speseTot,margine,notti,catMap,platMap};
   });
- 
-  let html = `
+
+  // Charts row: one bar + one donut per year, side by side
+  const chartsHtml = `
     <div style="background:var(--white);border:1px solid var(--border-light);border-radius:12px;padding:20px;margin-bottom:20px">
-      <div class="section-title" style="margin-bottom:14px">Panoramica</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:center">
-        <div><canvas id="chart-bar" style="max-height:220px"></canvas></div>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
-          <canvas id="chart-pie-all" style="max-height:220px;max-width:220px"></canvas>
-        </div>
+      <div class="section-title" style="margin-bottom:16px">Andamento per anno</div>
+      <div style="display:flex;gap:24px;flex-wrap:wrap;justify-content:center">
+        ${allData.map(d=>`
+          <div style="flex:1;min-width:220px;max-width:320px">
+            <div style="font-family:'Playfair Display',serif;font-size:14px;font-weight:600;color:var(--brown);text-align:center;margin-bottom:8px">${d.y}</div>
+            <canvas id="chart-bar-${d.y}" style="max-height:200px"></canvas>
+          </div>`).join("")}
       </div>
     </div>`;
- 
-  allYearsData.forEach(d => {
-    const {y,lordo,nettoC,nettoT,comm,tasse,speseTot,margine,notti,catMap,platMap} = d;
-    html += `<div style="background:var(--white);border:1px solid var(--border-light);border-radius:12px;padding:20px;margin-bottom:20px">
+
+  // Per-year detail
+  const detailHtml = allData.map(d=>{
+    const {y,lordo,nettoC,nettoT,comm,tasse,speseTot,margine,notti,catMap,platMap}=d;
+    return `<div style="background:var(--white);border:1px solid var(--border-light);border-radius:12px;padding:20px;margin-bottom:20px">
       <h2 style="font-family:'Playfair Display',serif;font-size:20px;margin-bottom:16px;color:var(--brown)">${y}</h2>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px">
         <div class="stat-card"><div class="stat-label">Lordo</div><div class="stat-value green">${fmtEur(lordo)}</div></div>
@@ -621,363 +476,150 @@ function renderRiepilogo() {
         <div>
           <div class="section-title" style="margin-bottom:8px">Spese per categoria</div>
           ${Object.keys(catMap).length===0
-            ? `<div style="color:var(--muted);font-style:italic;font-size:13px">Nessuna spesa per ${y}</div>`
-            : `<table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr style="background:var(--brown-pale)"><th style="padding:6px 10px;text-align:left;font-size:10px;letter-spacing:.6px;text-transform:uppercase;font-weight:600;color:#666">Categoria</th><th style="padding:6px 10px;text-align:right;font-size:10px;letter-spacing:.6px;text-transform:uppercase;font-weight:600;color:#666">Totale</th></tr></thead><tbody>${Object.entries(catMap).sort((a,b)=>b[1]-a[1]).map(([cat,tot])=>`<tr style="border-top:1px solid var(--border-light)"><td style="padding:6px 10px"><span class="pill" style="background:var(--brown)">${cat}</span></td><td style="padding:6px 10px;text-align:right;font-weight:600;color:#c62828">${fmtEur(tot)}</td></tr>`).join("")}</tbody></table>`}
+            ?`<div style="color:var(--muted);font-style:italic;font-size:13px">Nessuna spesa per ${y}</div>`
+            :`<table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr style="background:var(--brown-pale)"><th style="padding:6px 10px;text-align:left;font-size:10px;letter-spacing:.6px;text-transform:uppercase;font-weight:600;color:#666">Categoria</th><th style="padding:6px 10px;text-align:right;font-size:10px;letter-spacing:.6px;text-transform:uppercase;font-weight:600;color:#666">Totale</th></tr></thead><tbody>${Object.entries(catMap).sort((a,b)=>b[1]-a[1]).map(([cat,tot])=>`<tr style="border-top:1px solid var(--border-light)"><td style="padding:6px 10px"><span class="pill" style="background:var(--brown)">${cat}</span></td><td style="padding:6px 10px;text-align:right;font-weight:600;color:#c62828">${fmtEur(tot)}</td></tr>`).join("")}</tbody></table>`}
         </div>
       </div>
     </div>`;
-  });
- 
-  el.innerHTML = html;
- 
-  // ── Bar chart ──────────────────────────────────────────────────────
-  destroyChart("bar");
-  chartRegistry["bar"] = new Chart(document.getElementById("chart-bar").getContext("2d"), {
-    type:"bar",
-    data:{
-      labels: allYearsData.map(d=>d.y),
-      datasets:[
-        {label:"Margine",     data:allYearsData.map(d=>Math.round(d.margine)),  backgroundColor:"#2E7D32"},
-        {label:"Spese",       data:allYearsData.map(d=>Math.round(d.speseTot)), backgroundColor:"#c62828"},
-        {label:"Tasse",       data:allYearsData.map(d=>Math.round(d.tasse)),    backgroundColor:"#EF9A9A"},
-        {label:"Commissioni", data:allYearsData.map(d=>Math.round(d.comm)),     backgroundColor:"#FFCC80"},
-      ]
-    },
-    options:{
-      responsive:true,
-      plugins:{legend:{position:"bottom",labels:{boxWidth:12,font:{size:11}}},
-        tooltip:{callbacks:{label:ctx=>" €"+ctx.parsed.y.toLocaleString("it-IT")}}},
-      scales:{x:{stacked:true},y:{stacked:true,ticks:{callback:v=>"€"+Math.round(v/1000)+"k"}}}
-    }
-  });
- 
-  // ── Pie chart (anno più recente) ───────────────────────────────────
-  destroyChart("pie-all");
-  const d0 = allYearsData[0];
-  chartRegistry["pie-all"] = new Chart(document.getElementById("chart-pie-all").getContext("2d"), {
-    type:"doughnut",
-    data:{
-      labels:["Margine","Spese","Tasse","Commissioni"],
-      datasets:[{
-        data:[Math.round(d0.margine),Math.round(d0.speseTot),Math.round(d0.tasse),Math.round(d0.comm)],
-        backgroundColor:["#2E7D32","#c62828","#EF9A9A","#FFCC80"],
-        borderWidth:2,borderColor:"#FDFAF5"
-      }]
-    },
-    options:{
-      responsive:true,cutout:"55%",
-      plugins:{
-        legend:{position:"bottom",labels:{boxWidth:12,font:{size:11}}},
-        tooltip:{callbacks:{label:ctx=>" €"+ctx.parsed.toLocaleString("it-IT")}},
-        title:{display:true,text:d0.y+" — ripartizione lordo",font:{size:12},color:"#8B6F47"}
+  }).join("");
+
+  el.innerHTML = chartsHtml + detailHtml;
+
+  // Draw one stacked bar per year
+  allData.forEach(d=>{
+    destroyChart("bar-"+d.y);
+    const ctx=document.getElementById("chart-bar-"+d.y);
+    if(!ctx) return;
+    chartRegistry["bar-"+d.y]=new Chart(ctx.getContext("2d"),{
+      type:"bar",
+      data:{
+        labels:[d.y],
+        datasets:[
+          {label:"Margine",     data:[Math.round(d.margine)],  backgroundColor:"#2E7D32"},
+          {label:"Spese",       data:[Math.round(d.speseTot)], backgroundColor:"#c62828"},
+          {label:"Tasse",       data:[Math.round(d.tasse)],    backgroundColor:"#EF9A9A"},
+          {label:"Commissioni", data:[Math.round(d.comm)],     backgroundColor:"#FFCC80"},
+        ]
+      },
+      options:{
+        responsive:true,
+        plugins:{legend:{position:"bottom",labels:{boxWidth:10,font:{size:10}}},tooltip:{callbacks:{label:ctx=>" €"+ctx.parsed.y.toLocaleString("it-IT")}}},
+        scales:{x:{stacked:true,display:false},y:{stacked:true,ticks:{callback:v=>"€"+Math.round(v/1000)+"k"}}}
       }
-    }
+    });
   });
 }
- 
-// ── Mini pie for current year on prenotazioni tab ──────────────────────
-function renderMiniPie() {
-  const currentYear = new Date().getFullYear().toString();
-  const yb = bookings.filter(b => yearOf(b)===currentYear);
-  const ys = spese.filter(sp => sp.data && sp.data.startsWith(currentYear));
-  if (!yb.length) { const c=document.getElementById("mini-pie-wrap"); if(c) c.style.display="none"; return; }
- 
-  const lordo    = yb.reduce((s,b)=>s+(parseFloat(b.prezzo)||0),0);
-  const nettoC   = yb.reduce((s,b)=>s+calcNetti(b).nettoComm,0);
-  const nettoT   = yb.reduce((s,b)=>s+calcNetti(b).nettoTasse,0);
-  const comm     = lordo-nettoC;
-  const tasse    = nettoC-nettoT;
-  const speseTot = ys.reduce((s,sp)=>s+(parseFloat(sp.importo)||0),0);
-  const margine  = nettoT-speseTot;
- 
-  const wrap = document.getElementById("mini-pie-wrap");
-  if (!wrap) return;
-  wrap.style.display = "block";
- 
-  document.getElementById("mini-pie-title").textContent = currentYear + " — ripartizione";
-  document.getElementById("mini-pie-legend").innerHTML = [
-    ["🟢","Margine",margine],["🔴","Spese",speseTot],["🩷","Tasse",tasse],["🟡","Commissioni",comm]
-  ].map(([ic,lab,val])=>`${ic} ${lab}: <strong>${fmtEur(val)}</strong>`).join("<br>");
- 
-  destroyChart("mini-pie");
-  chartRegistry["mini-pie"] = new Chart(document.getElementById("mini-pie-canvas").getContext("2d"), {
-    type:"doughnut",
-    data:{
-      labels:["Margine","Spese","Tasse","Commissioni"],
-      datasets:[{
-        data:[Math.round(margine),Math.round(speseTot),Math.round(tasse),Math.round(comm)],
-        backgroundColor:["#2E7D32","#c62828","#EF9A9A","#FFCC80"],
-        borderWidth:2,borderColor:"#FDFAF5"
-      }]
-    },
-    options:{
-      responsive:true,cutout:"60%",
-      plugins:{
-        legend:{display:false},
-        tooltip:{callbacks:{label:ctx=>" €"+ctx.parsed.toLocaleString("it-IT")}}
-      }
-    }
-  });
-}
- 
+
 // ── Form prenotazione ─────────────────────────────────────────────────
 function openForm() {
-  editId=null;
-  document.getElementById("modal-title").textContent="Nuova prenotazione";
+  editId=null; document.getElementById("modal-title").textContent="Nuova prenotazione";
   ["checkIn","checkOut","prezzo","ospiti","paese","note"].forEach(k=>document.getElementById("f-"+k).value="");
-  document.getElementById("f-piattaforma").value="";
-  document.getElementById("f-commissione").value="";
-  document.getElementById("f-tasse").value=TASSA_DEFAULT;
-  document.getElementById("comm-hint").textContent="";
+  document.getElementById("f-piattaforma").value=""; document.getElementById("f-commissione").value="";
+  document.getElementById("f-tasse").value=TASSA_DEFAULT; document.getElementById("comm-hint").textContent="";
   document.getElementById("netto-preview").style.display="none";
   document.getElementById("overlay").classList.add("open");
 }
 function openEdit(id) {
-  const b=bookings.find(x=>x.id===id); if(!b) return;
-  editId=id;
+  const b=bookings.find(x=>x.id===id); if(!b) return; editId=id;
   document.getElementById("modal-title").textContent="Modifica prenotazione";
-  document.getElementById("f-checkIn").value=b.check_in||"";
-  document.getElementById("f-checkOut").value=b.check_out||"";
-  document.getElementById("f-prezzo").value=b.prezzo||"";
-  document.getElementById("f-ospiti").value=b.ospiti||"";
-  document.getElementById("f-piattaforma").value=b.piattaforma||"";
-  document.getElementById("f-commissione").value=b.commissione||"";
-  document.getElementById("f-tasse").value=b.tasse??TASSA_DEFAULT;
-  document.getElementById("f-paese").value=b.paese||"";
-  document.getElementById("f-note").value=b.note||"";
-  document.getElementById("comm-hint").textContent=PLATFORM_COMM_NOTE[b.piattaforma]||"";
-  updateNettoPreview();
-  document.getElementById("overlay").classList.add("open");
+  document.getElementById("f-checkIn").value=b.check_in||""; document.getElementById("f-checkOut").value=b.check_out||"";
+  document.getElementById("f-prezzo").value=b.prezzo||""; document.getElementById("f-ospiti").value=b.ospiti||"";
+  document.getElementById("f-piattaforma").value=b.piattaforma||""; document.getElementById("f-commissione").value=b.commissione||"";
+  document.getElementById("f-tasse").value=b.tasse??TASSA_DEFAULT; document.getElementById("f-paese").value=b.paese||"";
+  document.getElementById("f-note").value=b.note||""; document.getElementById("comm-hint").textContent=PLATFORM_COMM_NOTE[b.piattaforma]||"";
+  updateNettoPreview(); document.getElementById("overlay").classList.add("open");
 }
 function closeForm(){document.getElementById("overlay").classList.remove("open");}
- 
 function onPiattaformaChange() {
-  const p=document.getElementById("f-piattaforma").value;
-  const comm=PLATFORM_COMM[p];
+  const p=document.getElementById("f-piattaforma").value, comm=PLATFORM_COMM[p];
   document.getElementById("f-commissione").value=comm!==null&&comm!==undefined?comm:"";
-  document.getElementById("comm-hint").textContent=PLATFORM_COMM_NOTE[p]||"";
-  updateNettoPreview();
+  document.getElementById("comm-hint").textContent=PLATFORM_COMM_NOTE[p]||""; updateNettoPreview();
 }
 function updateNettoPreview() {
-  const lordo=parseFloat(document.getElementById("f-prezzo").value)||0;
-  const comm=parseFloat(document.getElementById("f-commissione").value)||0;
-  const tassa=parseFloat(document.getElementById("f-tasse").value)??TASSA_DEFAULT;
-  const el=document.getElementById("netto-preview");
-  if (!lordo){el.style.display="none";return;}
-  const nc=lordo*(1-comm/100), nt=nc*(1-tassa/100);
-  el.style.display="block";
+  const lordo=parseFloat(document.getElementById("f-prezzo").value)||0, comm=parseFloat(document.getElementById("f-commissione").value)||0, tassa=parseFloat(document.getElementById("f-tasse").value)??TASSA_DEFAULT;
+  const el=document.getElementById("netto-preview"); if(!lordo){el.style.display="none";return;}
+  const nc=lordo*(1-comm/100), nt=nc*(1-tassa/100); el.style.display="block";
   el.innerHTML=`Lordo: <strong>${fmtEur(lordo)}</strong><br>${comm>0?`− Commissione ${comm}%: <strong style="color:var(--red)">${fmtEur(lordo*comm/100)}</strong> → Netto comm: <strong>${fmtEur(nc)}</strong><br>`:""}− Cedolare ${tassa}%: <strong style="color:var(--red)">${fmtEur(nc*tassa/100)}</strong> → <strong style="color:#E65100">Netto finale: ${fmtEur(nt)}</strong>`;
 }
- 
 async function saveBooking() {
   const get=id=>document.getElementById("f-"+id).value.trim();
   const checkIn=get("checkIn"),checkOut=get("checkOut");
-  if (!checkIn||!checkOut){alert("Inserisci almeno check-in e check-out.");return;}
-  const row={
-    check_in:checkIn, check_out:checkOut,
-    prezzo:parseFloat(get("prezzo"))||null,
-    ospiti:parseInt(get("ospiti"))||null,
-    piattaforma:get("piattaforma")||null,
-    commissione:parseFloat(get("commissione"))||0,
-    tasse:parseFloat(document.getElementById("f-tasse").value)||TASSA_DEFAULT,
-    paese:get("paese")||null,
-    note:get("note")||null
-  };
+  if(!checkIn||!checkOut){alert("Inserisci almeno check-in e check-out.");return;}
+  const row={check_in:checkIn,check_out:checkOut,prezzo:parseFloat(get("prezzo"))||null,ospiti:parseInt(get("ospiti"))||null,piattaforma:get("piattaforma")||null,commissione:parseFloat(get("commissione"))||0,tasse:parseFloat(document.getElementById("f-tasse").value)||TASSA_DEFAULT,paese:get("paese")||null,note:get("note")||null};
   setSyncStatus("loading","⟳ salvataggio…");
   try {
-    if (editId) {
-      await dbUpdate("prenotazioni",editId,row);
-      bookings=bookings.map(b=>b.id===editId?{...b,...row}:b);
-    } else {
-      row.id=Date.now().toString();
-      await dbInsert("prenotazioni",row);
-      bookings.push(row);
-    }
-    setSyncStatus("ok","✓ salvato");
-    closeForm(); render();
+    if(editId){await dbUpdate("prenotazioni",editId,row);bookings=bookings.map(b=>b.id===editId?{...b,...row}:b);}
+    else{row.id=Date.now().toString();await dbInsert("prenotazioni",row);bookings.push(row);}
+    setSyncStatus("ok","✓ salvato"); closeForm(); render();
   } catch(e){setSyncStatus("error","✗ errore salvataggio");alert("Errore: "+e.message);}
 }
- 
+
 // ── Form spesa ────────────────────────────────────────────────────────
 function openSpesaForm(){
-  editSpesaId=null;
-  document.getElementById("spesa-modal-title").textContent="Nuova spesa";
+  editSpesaId=null; document.getElementById("spesa-modal-title").textContent="Nuova spesa";
   document.getElementById("s-data").value=new Date().toISOString().slice(0,10);
   ["importo","descrizione"].forEach(k=>document.getElementById("s-"+k).value="");
-  document.getElementById("s-categoria").value="";
-  document.getElementById("overlay-spesa").classList.add("open");
+  document.getElementById("s-categoria").value=""; document.getElementById("overlay-spesa").classList.add("open");
 }
 function openEditSpesa(id){
-  const sp=spese.find(x=>x.id===id); if(!sp) return;
-  editSpesaId=id;
+  const sp=spese.find(x=>x.id===id); if(!sp) return; editSpesaId=id;
   document.getElementById("spesa-modal-title").textContent="Modifica spesa";
-  document.getElementById("s-data").value=sp.data||"";
-  document.getElementById("s-importo").value=sp.importo||"";
-  document.getElementById("s-categoria").value=sp.categoria||"";
-  document.getElementById("s-descrizione").value=sp.descrizione||"";
+  document.getElementById("s-data").value=sp.data||""; document.getElementById("s-importo").value=sp.importo||"";
+  document.getElementById("s-categoria").value=sp.categoria||""; document.getElementById("s-descrizione").value=sp.descrizione||"";
   document.getElementById("overlay-spesa").classList.add("open");
 }
 function closeSpesaForm(){document.getElementById("overlay-spesa").classList.remove("open");}
- 
 async function saveSpesa(){
-  const get=id=>document.getElementById("s-"+id).value.trim();
-  const importo=get("importo");
-  if (!importo){alert("Inserisci l'importo.");return;}
+  const get=id=>document.getElementById("s-"+id).value.trim(); const importo=get("importo");
+  if(!importo){alert("Inserisci l'importo.");return;}
   const row={data:get("data")||null,importo:parseFloat(importo),categoria:get("categoria")||null,descrizione:get("descrizione")||null};
   setSyncStatus("loading","⟳ salvataggio…");
   try {
-    if (editSpesaId){
-      await dbUpdate("spese",editSpesaId,row);
-      spese=spese.map(s=>s.id===editSpesaId?{...s,...row}:s);
-    } else {
-      row.id=Date.now().toString();
-      await dbInsert("spese",row);
-      spese.push(row);
-    }
-    setSyncStatus("ok","✓ salvato");
-    closeSpesaForm(); render();
+    if(editSpesaId){await dbUpdate("spese",editSpesaId,row);spese=spese.map(s=>s.id===editSpesaId?{...s,...row}:s);}
+    else{row.id=Date.now().toString();await dbInsert("spese",row);spese.push(row);}
+    setSyncStatus("ok","✓ salvato"); closeSpesaForm(); render();
   } catch(e){setSyncStatus("error","✗ errore salvataggio");alert("Errore: "+e.message);}
 }
- 
+
 // ── Delete ────────────────────────────────────────────────────────────
-function askDelete(id,type){
-  deleteId=id;deleteType=type;
-  document.getElementById("confirm-msg").textContent=type==="booking"?"Eliminare questa prenotazione?":"Eliminare questa spesa?";
-  document.getElementById("confirm-overlay").classList.add("open");
-}
+function askDelete(id,type){deleteId=id;deleteType=type;document.getElementById("confirm-msg").textContent=type==="booking"?"Eliminare questa prenotazione?":"Eliminare questa spesa?";document.getElementById("confirm-overlay").classList.add("open");}
 function closeConfirm(){document.getElementById("confirm-overlay").classList.remove("open");}
 async function confirmDelete(){
   setSyncStatus("loading","⟳ eliminazione…");
   try {
-    if (deleteType==="booking"){await dbDelete("prenotazioni",deleteId);bookings=bookings.filter(b=>b.id!==deleteId);}
-    else {await dbDelete("spese",deleteId);spese=spese.filter(s=>s.id!==deleteId);}
-    setSyncStatus("ok","✓ eliminato");
-    closeConfirm(); render();
+    if(deleteType==="booking"){await dbDelete("prenotazioni",deleteId);bookings=bookings.filter(b=>b.id!==deleteId);}
+    else{await dbDelete("spese",deleteId);spese=spese.filter(s=>s.id!==deleteId);}
+    setSyncStatus("ok","✓ eliminato"); closeConfirm(); render();
   } catch(e){setSyncStatus("error","✗ errore");alert("Errore: "+e.message);}
 }
- 
- 
+
 // ── Import CSV ────────────────────────────────────────────────────────
 async function importCSV(input) {
-  const file = input.files[0]; if (!file) return;
-  const text = await file.text();
-  const lines = text.trim().split("\n").slice(1); // skip header
-  if (!lines.length) { alert("File vuoto."); return; }
- 
-  const rows = lines.map(line => {
-    const cols = [];
-    let cur = "", inQ = false;
-    for (const ch of line) {
-      if (ch === '"') { inQ = !inQ; }
-      else if (ch === ',' && !inQ) { cols.push(cur); cur = ""; }
-      else { cur += ch; }
-    }
-    cols.push(cur);
-    return cols.map(c => c.replace(/^"|"$/g,'').replace(/""/g,'"').trim());
-  });
- 
-  // CSV columns: Check-in, Check-out, Notti, Lordo(EUR), Piattaforma, Comm%, Netto comm, Netto tasse, Ospiti, Paese, Note
-  const toInsert = rows.map(c => ({
-    id: Date.now().toString() + Math.random().toString(36).slice(2,6),
-    check_in:     c[0] || null,
-    check_out:    c[1] || null,
-    prezzo:       parseFloat(c[3]) || null,
-    piattaforma:  c[4] || null,
-    commissione:  parseFloat(c[5]) || 0,
-    tasse:        21,
-    ospiti:       parseInt(c[8]) || null,
-    paese:        c[9] || null,
-    note:         c[10] || null
-  }));
- 
-  if (!confirm(`Importare ${toInsert.length} prenotazioni?`)) { input.value=""; return; }
- 
-  setSyncStatus("loading", "⟳ importazione…");
-  try {
-    for (const row of toInsert) {
-      await dbInsert("prenotazioni", row);
-      bookings.push(row);
-    }
-    setSyncStatus("ok", "✓ " + toInsert.length + " importate");
-    input.value = "";
-    render();
-  } catch(e) {
-    setSyncStatus("error", "✗ errore importazione");
-    alert("Errore durante l'importazione: " + e.message);
-  }
+  const file=input.files[0]; if(!file) return;
+  const text=await file.text();
+  const lines=text.trim().split("\n").slice(1); if(!lines.length){alert("File vuoto.");return;}
+  const rows=lines.map(line=>{const cols=[];let cur="",inQ=false;for(const ch of line){if(ch==='"'){inQ=!inQ;}else if(ch===','&&!inQ){cols.push(cur);cur="";}else{cur+=ch;}}cols.push(cur);return cols.map(c=>c.replace(/^"|"$/g,'').replace(/""/g,'"').trim());});
+  const toInsert=rows.map(c=>({id:Date.now().toString()+Math.random().toString(36).slice(2,6),check_in:c[0]||null,check_out:c[1]||null,prezzo:parseFloat(c[3])||null,piattaforma:c[4]||null,commissione:parseFloat(c[5])||0,tasse:21,ospiti:parseInt(c[8])||null,paese:c[9]||null,note:c[10]||null}));
+  if(!confirm(`Importare ${toInsert.length} prenotazioni?`)){input.value="";return;}
+  setSyncStatus("loading","⟳ importazione…");
+  try { for(const row of toInsert){await dbInsert("prenotazioni",row);bookings.push(row);} setSyncStatus("ok","✓ "+toInsert.length+" importate"); input.value=""; render(); }
+  catch(e){setSyncStatus("error","✗ errore importazione");alert("Errore: "+e.message);}
 }
- 
+
 // ── Export ────────────────────────────────────────────────────────────
-function toggleExportMenu() {
-  const m = document.getElementById("export-menu");
-  m.style.display = m.style.display === "none" ? "block" : "none";
+function toggleExportMenu(){const m=document.getElementById("export-menu");m.style.display=m.style.display==="none"?"block":"none";}
+document.addEventListener("click",e=>{if(!document.getElementById("export-wrap").contains(e.target))document.getElementById("export-menu").style.display="none";});
+function toCSV(rows){return rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(",")).join("\n");}
+function download(csv,filename){const blob=new Blob([csv],{type:"text/csv;charset=utf-8;"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=filename;a.click();URL.revokeObjectURL(url);}
+function exportCSV(type){
+  document.getElementById("export-menu").style.display="none";
+  if(type==="bookings"){if(!bookings.length){alert("Nessuna prenotazione.");return;}const h=["Check-in","Check-out","Notti","Lordo (EUR)","Piattaforma","Commissione %","Netto comm.","Netto tasse","Ospiti","Paese","Note"];const r=bookings.map(b=>{const n=nights(b.check_in,b.check_out),nc=calcNetti(b);return[b.check_in,b.check_out,n??'',b.prezzo||'',b.piattaforma||'',nc.commPct||0,Math.round(nc.nettoComm),Math.round(nc.nettoTasse),b.ospiti||'',b.paese||'',b.note||''];});download(toCSV([h,...r]),"prenotazioni_cdf.csv");}
+  if(type==="spese"){if(!spese.length){alert("Nessuna spesa.");return;}const h=["Data","Categoria","Descrizione","Importo (EUR)"];const r=spese.map(s=>[s.data||'',s.categoria||'',s.descrizione||'',s.importo||'']);download(toCSV([h,...r]),"spese_cdf.csv");}
+  if(type==="all"){if(!bookings.length&&!spese.length){alert("Nessun dato.");return;}let csv="";if(bookings.length){const h=["Check-in","Check-out","Notti","Lordo (EUR)","Piattaforma","Commissione %","Netto comm.","Netto tasse","Ospiti","Paese","Note"];const r=bookings.map(b=>{const n=nights(b.check_in,b.check_out),nc=calcNetti(b);return[b.check_in,b.check_out,n??'',b.prezzo||'',b.piattaforma||'',nc.commPct||0,Math.round(nc.nettoComm),Math.round(nc.nettoTasse),b.ospiti||'',b.paese||'',b.note||''];});csv+="--- PRENOTAZIONI ---\n"+toCSV([h,...r]);}if(spese.length){const h=["Data","Categoria","Descrizione","Importo (EUR)"];const r=spese.map(s=>[s.data||'',s.categoria||'',s.descrizione||'',s.importo||'']);csv+="\n\n--- SPESE ---\n"+toCSV([h,...r]);}download(csv,"cdf_completo.csv");}
 }
-document.addEventListener("click", e => {
-  if (!document.getElementById("export-wrap").contains(e.target))
-    document.getElementById("export-menu").style.display = "none";
-});
- 
-function toCSV(rows) {
-  return rows.map(r => r.map(v => '"' + String(v??'').replace(/"/g,'""') + '"').join(",")).join("\n");
-}
-function download(csv, filename) {
-  const blob = new Blob([csv], {type:"text/csv;charset=utf-8;"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a"); a.href=url; a.download=filename; a.click();
-  URL.revokeObjectURL(url);
-}
- 
-function exportCSV(type) {
-  document.getElementById("export-menu").style.display = "none";
- 
-  if (type === "bookings") {
-    if (!bookings.length) { alert("Nessuna prenotazione da esportare."); return; }
-    const header = ["Check-in","Check-out","Notti","Lordo (EUR)","Piattaforma","Commissione %","Netto comm.","Netto tasse","Ospiti","Paese","Note"];
-    const rows = bookings.map(b => {
-      const n=nights(b.check_in,b.check_out), nc=calcNetti(b);
-      return [b.check_in,b.check_out,n??'',b.prezzo||'',b.piattaforma||'',nc.commPct||0,Math.round(nc.nettoComm),Math.round(nc.nettoTasse),b.ospiti||'',b.paese||'',b.note||''];
-    });
-    download(toCSV([header,...rows]), "prenotazioni_cdf.csv");
-  }
- 
-  if (type === "spese") {
-    if (!spese.length) { alert("Nessuna spesa da esportare."); return; }
-    const header = ["Data","Categoria","Descrizione","Importo (EUR)"];
-    const rows = spese.map(s => [s.data||'', s.categoria||'', s.descrizione||'', s.importo||'']);
-    download(toCSV([header,...rows]), "spese_cdf.csv");
-  }
- 
-  if (type === "all") {
-    if (!bookings.length && !spese.length) { alert("Nessun dato da esportare."); return; }
-    let csv = "";
-    if (bookings.length) {
-      const header = ["Check-in","Check-out","Notti","Lordo (EUR)","Piattaforma","Commissione %","Netto comm.","Netto tasse","Ospiti","Paese","Note"];
-      const rows = bookings.map(b => {
-        const n=nights(b.check_in,b.check_out), nc=calcNetti(b);
-        return [b.check_in,b.check_out,n??'',b.prezzo||'',b.piattaforma||'',nc.commPct||0,Math.round(nc.nettoComm),Math.round(nc.nettoTasse),b.ospiti||'',b.paese||'',b.note||''];
-      });
-      csv += "--- PRENOTAZIONI ---\n" + toCSV([header,...rows]);
-    }
-    if (spese.length) {
-      const header = ["Data","Categoria","Descrizione","Importo (EUR)"];
-      const rows = spese.map(s => [s.data||'', s.categoria||'', s.descrizione||'', s.importo||'']);
-      csv += "\n\n--- SPESE ---\n" + toCSV([header,...rows]);
-    }
-    download(csv, "cdf_completo.csv");
-  }
-}
- 
-// ── Close on backdrop ─────────────────────────────────────────────────
-["overlay","overlay-spesa","confirm-overlay"].forEach(id=>{
-  document.getElementById(id).addEventListener("click",e=>{
-    if(e.target===e.currentTarget){
-      if(id==="overlay") closeForm();
-      else if(id==="overlay-spesa") closeSpesaForm();
-      else closeConfirm();
-    }
-  });
-});
- 
+
+["overlay","overlay-spesa","confirm-overlay"].forEach(id=>{document.getElementById(id).addEventListener("click",e=>{if(e.target===e.currentTarget){if(id==="overlay")closeForm();else if(id==="overlay-spesa")closeSpesaForm();else closeConfirm();}});});
+
 load();
 </script>
 </body>
