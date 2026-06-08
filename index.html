@@ -453,6 +453,32 @@ function renderRiepilogo() {
     return {y,lordo,nettoC,nettoT,comm,tasse,speseTot,margine,notti,catMap,platMap};
   });
 
+  // Totale generale
+  const totLordo   = allData.reduce((s,d)=>s+d.lordo,0);
+  const totComm    = allData.reduce((s,d)=>s+d.comm,0);
+  const totNettoC  = allData.reduce((s,d)=>s+d.nettoC,0);
+  const totTasse   = allData.reduce((s,d)=>s+d.tasse,0);
+  const totNettoT  = allData.reduce((s,d)=>s+d.nettoT,0);
+  const totSpese   = allData.reduce((s,d)=>s+d.speseTot,0);
+  const totMargine = allData.reduce((s,d)=>s+d.margine,0);
+  const totNotti   = allData.reduce((s,d)=>s+d.notti,0);
+
+  const totaleHtml = `
+    <div style="background:var(--white);border:2px solid var(--brown);border-radius:12px;padding:20px;margin-bottom:20px">
+      <div class="section-title" style="margin-bottom:14px">Totale complessivo — tutti gli anni</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <div class="stat-card"><div class="stat-label">Lordo totale</div><div class="stat-value green">${fmtEur(totLordo)}</div></div>
+        <div class="stat-card"><div class="stat-label">Commissioni</div><div class="stat-value red">${fmtEur(totComm)}</div></div>
+        <div class="stat-card"><div class="stat-label">Netto comm.</div><div class="stat-value orange">${fmtEur(totNettoC)}</div></div>
+        <div class="stat-card"><div class="stat-label">Tasse</div><div class="stat-value red">${fmtEur(totTasse)}</div></div>
+        <div class="stat-card"><div class="stat-label">Netto tasse</div><div class="stat-value orange">${fmtEur(totNettoT)}</div></div>
+        <div class="stat-card"><div class="stat-label">Spese operative</div><div class="stat-value red">${fmtEur(totSpese)}</div></div>
+        <div class="stat-card"><div class="stat-label">Margine finale</div><div class="stat-value ${totMargine>=0?"green":"red"}">${fmtEur(totMargine)}</div></div>
+        <div class="stat-card"><div class="stat-label">Notti totali</div><div class="stat-value">${totNotti}</div></div>
+        <div class="stat-card"><div class="stat-label">Media/notte lordo</div><div class="stat-value">${totNotti>0?fmtEur(totLordo/totNotti):"—"}</div></div>
+      </div>
+    </div>`;
+
   // Charts row: one bar + one donut per year, side by side
   const chartsHtml = `
     <div style="background:var(--white);border:1px solid var(--border-light);border-radius:12px;padding:20px;margin-bottom:20px">
@@ -503,7 +529,7 @@ function renderRiepilogo() {
     </div>`;
   }).join("");
 
-  el.innerHTML = chartsHtml + detailHtml;
+  el.innerHTML = totaleHtml + chartsHtml + detailHtml;
 
   // Draw one stacked bar per year
   allData.forEach(d=>{
